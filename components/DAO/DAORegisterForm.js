@@ -18,9 +18,9 @@ const DAORegisterForm = ({ setWantsToLogin }) => {
   const [daoNFTContract, setDAONFT] = useState(undefined);
 
   useEffect(() => {
-    if (contractAddresses.DaoNFT[chainId][0]) {
+    if (contractAddresses.DaoNFT[chainId]?.[0]) {
       const DAONFT = new ethers.Contract(
-        contractAddresses["DaoNFT"][chainId][0],
+        contractAddresses["DaoNFT"][chainId]?.[0],
         DaoNFT_abi,
       );
       setDAONFT(DAONFT);

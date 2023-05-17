@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
       }
       setNetwork(chainIdToNetwork[chainId]);
       localStorage.setItem("isWalletConnected", true);
-     
+
     }
   }
 
@@ -77,10 +77,12 @@ export const AuthProvider = ({ children }) => {
       });
 
       setWeb3auth(web3auth);
+
       await web3auth.initModal();
       const provider = await web3auth.connect();
       const signer = new ethers.providers.Web3Provider(provider).getSigner();
       setSigner(signer);
+
     } catch (error) {
       console.error(error);
     }
@@ -101,29 +103,19 @@ export const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
-    if (user?.socialLogin) {
-      initWeb3AuthSigner();
-    }
-    else {
-      setValues();
-    }
+    initWeb3AuthSigner();
+    setValues();
   }, [user]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      // if (token != null) {
       const token = localStorage.getItem("token");
       setToken(token);
       const decodedToken = jwt_decode(token);
       const user = decodedToken.data.user;
       setUser(user);
       setIsLoggedIn(true);
-      // if (!socket) {
-      //   console.log("socketttt---->", user._id);
-      //   connectSocket(user?._id);
-      // }
       setValues();
-      // } 
     }
     else {
       setIsLoggedIn(false);

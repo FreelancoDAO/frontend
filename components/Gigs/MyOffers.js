@@ -35,7 +35,7 @@ const MyGigActions = ({ proposalsData }) => {
       contractAddresses["Freelanco"][chainId]?.[0]
     ) {
       const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][chainId][0],
+        contractAddresses["Freelanco"][chainId]?.[0],
         Freelanco_abi,
       );
       setFreelanco(FreelancoContract);

@@ -90,7 +90,7 @@ const CreateFreelancerPage = () => {
     if (contractAddresses["Gig"][chainId]?.[0] &&
       contractAddresses["Freelanco"][chainId]?.[0]) {
       const FreelancoContract = new ethers.Contract(
-        contractAddresses["Gig"][chainId][0],
+        contractAddresses["Gig"][chainId]?.[0],
         Gig_abi
       );
       setGigContract(FreelancoContract);
