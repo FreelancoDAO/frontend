@@ -7,7 +7,7 @@ import { useAccount, useNetwork, useSigner } from "wagmi";
 const {
   contractAddresses,
   DaoNFT_abi,
-} = require("../constants");
+} = require("../../constants");
 
 const DAORegisterForm = ({ setWantsToLogin }) => {
   const { setUser, setIsLoggedIn, user, chainId, signer } = useAuth();
@@ -28,7 +28,6 @@ const DAORegisterForm = ({ setWantsToLogin }) => {
   }, [chainId]);
 
   const { address } = useAccount();
-  const { chain } = useNetwork();
 
   const requestNFT = async () => {
     try {

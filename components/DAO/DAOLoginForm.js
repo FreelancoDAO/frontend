@@ -9,23 +9,17 @@ import { requestMessage, verifySignature } from "../../api/auth";
 const {
   contractAddresses,
   DaoNFT_abi,
-} = require("../constants");
+} = require("../../constants");
 
 const { ethers } = require("ethers");
 
 const LoginForm = ({ setWantsToLogin }) => {
   const {
-    isLoggedIn,
     user,
     setIsLoggedIn,
     setToken,
-    isSellerYet,
     setUser,
-    AsSeller,
-    setAsSeller,
     chainId,
-    signer,
-    isWrongNetwork,
   } = useAuth();
   const router = useRouter();
 

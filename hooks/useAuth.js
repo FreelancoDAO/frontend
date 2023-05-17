@@ -1,27 +1,12 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import axios from "axios";
-import { getProfile, getProposalsOfClient, socialLogin } from "../api/auth";
 import jwt_decode from "jwt-decode";
 import { socket, connectSocket } from "../socket";
 import { useRouter } from "next/router";
 import { Web3Auth } from "@web3auth/web3auth";
 import { CHAIN_NAMESPACES } from "@web3auth/base";
 
-const {
-  contractAddresses,
-  Gig_abi,
-  Freelanco_abi,
-  DaoNFT_abi,
-  whitelist_abi,
-} = require("../constants");
 const { ethers } = require("ethers");
 import {
-  useAccount,
-  useConnect,
-  useSignMessage,
-  useDisconnect,
-  useNetwork,
-  useProvider,
   useSigner,
 } from "wagmi";
 
@@ -40,10 +25,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState();
   const [isSellerYet, setIsSellerYet] = useState(false);
   const [userProposals, setUserProposals] = useState([]);
-  // const [freelancoContract, setFreelanco] = useState(undefined);
-  // const [gigContract, setGigContract] = useState(undefined);
-  // const [daoNFTContract, setDAONFT] = useState(undefined);
-  // const [whitelistNFT, setWhitelistNFT] = useState(undefined);
   const [signer, setSigner] = useState(undefined);
   const [chainId, setChainID] = useState(undefined);
   const [network, setNetwork] = useState(undefined);
@@ -77,45 +58,7 @@ export const AuthProvider = ({ children }) => {
       }
       setNetwork(chainIdToNetwork[chainId]);
       localStorage.setItem("isWalletConnected", true);
-      // console.log("contractAddresses", contractAddresses["Gig"][window.ethereum.networkVersion][0], contractAddresses["Freelanco"][window.ethereum.networkVersion][0]);
-      // if (
-      //   contractAddresses["Gig"][window.ethereum.networkVersion]?.[0] &&
-      //   contractAddresses["Freelanco"][window.ethereum.networkVersion]?.[0]
-      // ) {
-      //   const FreelancoContract = new ethers.Contract(
-      //     contractAddresses["Freelanco"][window.ethereum.networkVersion][0],
-      //     Freelanco_abi,
-      //     signer
-      //   );
-      //   setFreelanco(FreelancoContract);
-
-      //   if (contractAddresses.Gig[window.ethereum.networkVersion][0]) {
-      //     const FreelancoContract = new ethers.Contract(
-      //       contractAddresses["Gig"][window.ethereum.networkVersion][0],
-      //       Gig_abi,
-      //       signer
-      //     );
-      //     setGigContract(FreelancoContract);
-      //   }
-
-      // if (contractAddresses.DaoNFT[window.ethereum.networkVersion][0]) {
-      //   const DAONFT = new ethers.Contract(
-      //     contractAddresses["DaoNFT"][window.ethereum.networkVersion][0],
-      //     DaoNFT_abi,
-      //     signer
-      //   );
-      //   setDAONFT(DAONFT);
-      // }
-      // }
-      // if (contractAddresses.Whitelist[window?.ethereum?.networkVersion]?.[0]) {
-      //   const whitelist = new ethers.Contract(
-      //     contractAddresses["Whitelist"][window.ethereum.networkVersion][0],
-      //     whitelist_abi,
-      //     signer
-      //   );
-
-      //   setWhitelistNFT(whitelist);
-      // }
+     
     }
   }
 
@@ -142,28 +85,6 @@ export const AuthProvider = ({ children }) => {
       console.error(error);
     }
   };
-
-
-  console.log("provider", provider);
-
-  useEffect(() => {
-    const connect = async () => {
-      console.log(socket, socket?.connected, user, "auth socket");
-      if (!socket && !socket?.connected && user) {
-        console.log("connecting.....");
-        const socket = await connectSocket(user.wallet_address);
-        console.log("socket id is ", socket.id);
-        socket.on("new_message", (data) => {
-          setNewMessageCount((prevSet) => {
-            const newSet = new Set(prevSet);
-            newSet.add(data.conversation_id);
-            return newSet;
-          });
-        });
-      }
-    };
-    connect();
-  }, [user, socket, socket?.connected]);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -209,7 +130,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // const router = useRouter();
 
   return (
     <Provider
@@ -225,10 +145,6 @@ export const AuthProvider = ({ children }) => {
         setUserProposals,
         asSeller,
         setAsSeller,
-        // freelancoContract,
-        // gigContract,
-        // daoNFTContract,
-        // whitelistNFT,
         signer,
         setSigner,
         network,
