@@ -9,7 +9,12 @@ import axios from "axios";
 import ErrorBox from "../components/Validation/ErrorBox";
 import TxBox from "../components/Validation/TxBox";
 import { useSigner } from "wagmi";
-import { watchAccount } from "@wagmi/core";
+const {
+  contractAddresses,
+  Freelanco_abi,
+} = require("../constants");
+
+
 
 const checkout = () => {
   const router = useRouter();
@@ -22,7 +27,7 @@ const checkout = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [daoCharge, setDaoCharge] = useState(0);
   const [total, setTotal] = useState();
-  const { user, freelancoContract, setIsLoggedIn } = useAuth();
+  const { user, setIsLoggedIn, provider, chainId, signer } = useAuth();
   const [conversationRate, setConvertionRate] = useState(undefined);
 
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -30,24 +35,9 @@ const checkout = () => {
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
   const [validationErrors, setValidationErrors] = useState("");
-  const { data: signer, isError, isLoading } = useSigner();
+  // const { data: signe, isError, isLoading } = useSigner();
+  const [freelancoContract, setFreelanco] = useState(undefined);
 
-  console.log("singner....", isError, isLoading);
-
-  const unwatch = watchAccount((account) => {
-    if (user) {
-      if (account.address != user.wallet_address) {
-        setIsLoggedIn(false);
-        console.log("LOGGED OUT");
-        setShowErrorDialog(true);
-        setErrorMessage("You logged out");
-        localStorage.removeItem("token");
-
-        // router.push("/login");
-        setUser(null);
-      }
-    }
-  });
 
   const {
     register,
@@ -65,12 +55,30 @@ const checkout = () => {
   const data = useWatch({ control });
   console.log(data);
 
+  useEffect(() => {
+    if (
+      contractAddresses["Gig"][chainId]?.[0] &&
+      contractAddresses["Freelanco"][chainId]?.[0]
+    ) {
+    
+      const FreelancoContract = new ethers.Contract(
+        contractAddresses["Freelanco"][chainId][0],
+        Freelanco_abi,
+      );
+      setFreelanco(FreelancoContract);
+    }
+  }
+    , [chainId]);
+  console.log("freelancoContract------------>", freelancoContract, chainId);
+
   const handleChange = (e) => {
     setValue("freelancer_charges", e.target.value);
     setDaoCharge((e.target.value * 0.2).toFixed(2));
     setTotal((e.target.value * 1.2).toFixed(2));
     setValue("price", e.target.value * 1.2);
   };
+
+  console.log("user", user);
 
   const submit_proposal = async () => {
     try {
@@ -100,29 +108,12 @@ const checkout = () => {
       }
       console.log(errors);
 
-      // if (!getValues("deadline")) {
-      //   errors.deadline = "please mention deadline";
-      // }
-      // if (getValues("deadline") && getValues("deadline") < new Date()) {
-      //   console.log("hii");
-      //   errors.deadline = "please select a date that is on or after the current date";
-      // }
-
       setValidationErrors(errors);
 
       if (Object.keys(errors).length != 0) {
         return;
       }
 
-      const d = {
-        ...data,
-        client_ref: user?._id,
-        freelancer_ref: gig?.freelancer_ref,
-        gig_ref: gig?._id,
-      };
-      if (!signer) {
-        throw new Error("please connect your wallet");
-      }
       let contractWithSigner = freelancoContract.connect(signer);
       console.log(contractWithSigner, "contractWithSigner");
       const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -190,7 +181,7 @@ const checkout = () => {
         show={showTxDialog}
         cancel={setShowTxDialog}
         txMessage={txMessage}
-        // routeToPush={"/client-profile"}
+      // routeToPush={"/client-profile"}
       />
       <div className="flex justify-center items-center min-h-[calc(100vh-120px)] bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 h-screen px-16 flex-col md:flex-row">
         <div className="w-full flex-col justify-start items-start mr-10">
@@ -270,8 +261,8 @@ const checkout = () => {
                 {...register("deadline")}
                 type="date"
                 className="bg-gray-400 text-black"
-                // selected={startDate}
-                // onChange={(date) => setStartDate(date)}
+              // selected={startDate}
+              // onChange={(date) => setStartDate(date)}
               />
             </div>
           </div>

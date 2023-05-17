@@ -1,17 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import GigRating from "../Gigs/GigRating";
 import MakeDispute from "../Gigs/MakeDispute";
-
+import { ethers } from "ethers";
 import ErrorBox from "../Validation/ErrorBox";
 import TxBox from "../Validation/TxBox";
 import { useSigner } from "wagmi";
+const {
+  contractAddresses,
+  Freelanco_abi,
+} = require("../../constants");
 
 const OrderManagement = ({ approvedProosals }) => {
   const [selectedOrder, setSeletedOrder] = useState(0);
-  const { user, freelancoContract } = useAuth();
+  const { user, signer, chainId } = useAuth();
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [showDisputeDialog, setShowDisputeDialog] = useState(false);
   const [rating, setRating] = useState(null);
@@ -20,7 +24,21 @@ const OrderManagement = ({ approvedProosals }) => {
   const [showTxDialog, setShowTxDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
-  const { data: signer, isError, isLoading } = useSigner();
+  // const { data: signer, isError, isLoading } = useSigner();
+  const [freelancoContract, setFreelanco] = useState(undefined);
+  useEffect(() => {
+    if (
+      contractAddresses["Gig"][chainId]?.[0] &&
+      contractAddresses["Freelanco"][chainId]?.[0]
+    ) {
+      const FreelancoContract = new ethers.Contract(
+        contractAddresses["Freelanco"][chainId][0],
+        Freelanco_abi,
+      );
+      setFreelanco(FreelancoContract);
+    }
+  }
+    , [chainId]);
 
   const markSuccessful = async () => {
     try {
@@ -184,11 +202,11 @@ const OrderManagement = ({ approvedProosals }) => {
       {approvedProosals[selectedOrder] != null ? (
         <div
           className="flex-3/4 w-3/4 flex-col mb-20 border"
-          // className={
-          //   showReviewDialog === true || showReviewDialog == true
-          //     ? "flex flex-3/4 w-3/4 flex-col mb-20 border opacity-5 "
-          //     : "flex flex-3/4 w-3/4 flex-col mb-20 border"
-          // }
+        // className={
+        //   showReviewDialog === true || showReviewDialog == true
+        //     ? "flex flex-3/4 w-3/4 flex-col mb-20 border opacity-5 "
+        //     : "flex flex-3/4 w-3/4 flex-col mb-20 border"
+        // }
         >
           {
             <div
@@ -223,8 +241,8 @@ const OrderManagement = ({ approvedProosals }) => {
                     <div className="flex flex-col">
                       <Link
                         href="#"
-                        // href={`/freelancer-profile/${approvedProosals[selectedOrder]?.client?._id}`}
-                        // to={`/freelancer-profile/6`}
+                      // href={`/freelancer-profile/${approvedProosals[selectedOrder]?.client?._id}`}
+                      // to={`/freelancer-profile/6`}
                       >
                         <span className="font-bold text-md hover:underline cursor-pointer">
                           {approvedProosals[selectedOrder]?.gig_detail?.title}{" "}

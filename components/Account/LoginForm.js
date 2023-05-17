@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import jwt_decode from "jwt-decode";
 // import { loginUser, profile, validateUser } from "../api/auth";
 import useAuth from "../../hooks/useAuth";
+import { Web3Auth } from "@web3auth/web3auth";
+import { CHAIN_NAMESPACES } from "@web3auth/base";
+import RPC from "./web3RPC";
 // import Web3 from "web3";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 
 import {
   useAccount,
@@ -11,8 +15,10 @@ import {
   useSignMessage,
   useDisconnect,
   useNetwork,
+  useSigner,
+  ConnectorAlreadyConnectedError,
 } from "wagmi";
-import { requestMessage, verifySignature } from "../../api/auth";
+import { requestMessage, verifySignature, socialLogin } from "../../api/auth";
 
 import jwt_decode from "jwt-decode";
 import ErrorBox from "../Validation/ErrorBox";
@@ -32,6 +38,7 @@ const LoginForm = ({ setWantsToLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { chain } = useNetwork();
+
   const {
     isLoggedIn,
     user,
@@ -44,7 +51,85 @@ const LoginForm = ({ setWantsToLogin }) => {
     chainId,
     isWrongNetwork,
     setValues,
+    web3auth,
+    setProvider,
+    setChainID,
+    setSigner
   } = useAuth();
+
+
+
+  const [userData, setUserData] = useState({});
+  // console.log("web3auth", web3auth);
+
+  // useEffect(() => {
+  //   const init = async () => {
+  //     console.log("hii");
+  //     try {
+  //       const web3auth = new Web3Auth({
+  //         clientId,
+  //         chainConfig: {
+  //           chainNamespace: CHAIN_NAMESPACES.EIP155,
+  //           chainId: "0x13881",
+  //           rpcTarget: "https://rpc-mumbai.maticvigil.com/",
+  //         },
+  //       });
+
+  //       setWeb3auth(web3auth);
+  //       await web3auth.initModal();
+  //       setProvider(web3auth.provider);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   init();
+  // }, []);
+
+  const social_login = async () => {
+    if (!web3auth) {
+      console.log("web3auth not initialized yet");
+      return;
+    }
+    const web3authProvider = await web3auth.connect();
+    const signer = new ethers.providers.Web3Provider(web3authProvider).getSigner();
+    console.log("signerrr", signer);
+    setSigner(signer);
+    // Get the current user's address
+    const userAddress = await signer.getAddress();
+    setProvider(web3authProvider);
+    const user = await web3auth.getUserInfo();
+    setUserData(user);
+    const rpc = new RPC(web3authProvider);
+    const private_Key = await rpc.getPrivateKey();
+    const chain = await rpc.getChainId();
+    console.log("ccccc", chain);
+    setChainID(chain);
+    const wallet_address = new ethers.Wallet(private_Key);
+    const user_details = { ...user, private_Key, wallet_address: wallet_address?.address, socialLogin: true }
+    const result = await socialLogin(user_details);
+    const token = result.token;
+    localStorage.setItem("token", token);
+    router.push("/explore");
+    setIsLoggedIn(true);
+    setToken(result.token);
+    setUser(result.user);
+    setValues();
+  };
+
+  // const getUserInfo = async () => {
+  //   if (!web3auth) {
+  //     console.log("web3auth not initialized yet");
+  //     return;
+  //   }
+  //   const user = await web3auth.getUserInfo();
+  //   setUserData(user);
+  //   console.log("userData",user);
+  // };
+
+
+
+
 
   const connectAndSign = async () => {
     setIsLoading(true);
@@ -95,7 +180,7 @@ const LoginForm = ({ setWantsToLogin }) => {
     }
     // console.log(jwt_decode(result.token));
   };
-
+  console.log("address------------", address, "chain-----------------", chain);
   const { push } = useRouter();
 
   return (
@@ -156,6 +241,16 @@ const LoginForm = ({ setWantsToLogin }) => {
               Please reconnect to Polygon Mumbai network.
             </span>
           ))}
+        <>
+          <p className="w-3/4 p-4  my-2 text-center py-2 text-white font-light">or</p>
+          <button
+            // href="/explore"
+            onClick={() => social_login()}
+            className="w-3/4 p-4 cursor-pointer border border-white rounded-2xl my-4  py-2 text-white font-light"
+          >
+            Social Login
+          </button>
+        </>
       </form>
     </div>
   );

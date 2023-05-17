@@ -1,9 +1,11 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import axios from "axios";
-import { getProfile, getProposalsOfClient } from "../api/auth";
+import { getProfile, getProposalsOfClient, socialLogin } from "../api/auth";
 import jwt_decode from "jwt-decode";
 import { socket, connectSocket } from "../socket";
 import { useRouter } from "next/router";
+import { Web3Auth } from "@web3auth/web3auth";
+import { CHAIN_NAMESPACES } from "@web3auth/base";
 
 const {
   contractAddresses,
@@ -38,10 +40,10 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState();
   const [isSellerYet, setIsSellerYet] = useState(false);
   const [userProposals, setUserProposals] = useState([]);
-  const [freelancoContract, setFreelanco] = useState(undefined);
-  const [gigContract, setGigContract] = useState(undefined);
-  const [daoNFTContract, setDAONFT] = useState(undefined);
-  const [whitelistNFT, setWhitelistNFT] = useState(undefined);
+  // const [freelancoContract, setFreelanco] = useState(undefined);
+  // const [gigContract, setGigContract] = useState(undefined);
+  // const [daoNFTContract, setDAONFT] = useState(undefined);
+  // const [whitelistNFT, setWhitelistNFT] = useState(undefined);
   const [signer, setSigner] = useState(undefined);
   const [chainId, setChainID] = useState(undefined);
   const [network, setNetwork] = useState(undefined);
@@ -55,64 +57,94 @@ export const AuthProvider = ({ children }) => {
   const [searchedGigs, setSearchedGigs] = useState([]);
   const [newMessageCount, setNewMessageCount] = useState(new Set());
   const [isWrongNetwork, setIsWrongNetwork] = useState(undefined);
+  const [web3auth, setWeb3auth] = useState(null);
   const router = useRouter();
-  const { chain } = useNetwork();
   const { data: signers, isError, isLoading } = useSigner();
 
-  console.log("newMessageCount...........................", newMessageCount);
+  console.log("signer...........................", signer);
   // console.log(user, "...........................it's working");
 
   async function setValues() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    setProvider(provider);
-    setSigner(provider.getSigner());
-    setIsLoggedIn(true);
-    setChainID(window.ethereum.networkVersion);
-    if (parseInt(window.ethereum.networkVersion) === 80001) {
-      setIsWrongNetwork(false);
-    }
-    setNetwork(chainIdToNetwork[chainId]);
-    localStorage.setItem("isWalletConnected", true);
-    // console.log("contractAddresses", contractAddresses["Gig"][window.ethereum.networkVersion][0], contractAddresses["Freelanco"][window.ethereum.networkVersion][0]);
-    if (
-      contractAddresses["Gig"][window.ethereum.networkVersion]?.[0] &&
-      contractAddresses["Freelanco"][window.ethereum.networkVersion]?.[0]
-    ) {
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][window.ethereum.networkVersion][0],
-        Freelanco_abi,
-        signer
-      );
-      setFreelanco(FreelancoContract);
-
-      if (contractAddresses.Gig[window.ethereum.networkVersion][0]) {
-        const FreelancoContract = new ethers.Contract(
-          contractAddresses["Gig"][window.ethereum.networkVersion][0],
-          Gig_abi,
-          signer
-        );
-        setGigContract(FreelancoContract);
+    console.log("ether", window.ethereum);
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(provider);
+      setSigner(provider.getSigner());
+      setIsLoggedIn(true);
+      setChainID(window.ethereum.networkVersion);
+      if (parseInt(window.ethereum.networkVersion) === 80001) {
+        setIsWrongNetwork(false);
       }
+      setNetwork(chainIdToNetwork[chainId]);
+      localStorage.setItem("isWalletConnected", true);
+      // console.log("contractAddresses", contractAddresses["Gig"][window.ethereum.networkVersion][0], contractAddresses["Freelanco"][window.ethereum.networkVersion][0]);
+      // if (
+      //   contractAddresses["Gig"][window.ethereum.networkVersion]?.[0] &&
+      //   contractAddresses["Freelanco"][window.ethereum.networkVersion]?.[0]
+      // ) {
+      //   const FreelancoContract = new ethers.Contract(
+      //     contractAddresses["Freelanco"][window.ethereum.networkVersion][0],
+      //     Freelanco_abi,
+      //     signer
+      //   );
+      //   setFreelanco(FreelancoContract);
 
-      if (contractAddresses.DaoNFT[window.ethereum.networkVersion][0]) {
-        const DAONFT = new ethers.Contract(
-          contractAddresses["DaoNFT"][window.ethereum.networkVersion][0],
-          DaoNFT_abi,
-          signer
-        );
-        setDAONFT(DAONFT);
-      }
-    }
-    if (contractAddresses.Whitelist[window?.ethereum?.networkVersion]?.[0]) {
-      const whitelist = new ethers.Contract(
-        contractAddresses["Whitelist"][window.ethereum.networkVersion][0],
-        whitelist_abi,
-        signer
-      );
+      //   if (contractAddresses.Gig[window.ethereum.networkVersion][0]) {
+      //     const FreelancoContract = new ethers.Contract(
+      //       contractAddresses["Gig"][window.ethereum.networkVersion][0],
+      //       Gig_abi,
+      //       signer
+      //     );
+      //     setGigContract(FreelancoContract);
+      //   }
 
-      setWhitelistNFT(whitelist);
+      // if (contractAddresses.DaoNFT[window.ethereum.networkVersion][0]) {
+      //   const DAONFT = new ethers.Contract(
+      //     contractAddresses["DaoNFT"][window.ethereum.networkVersion][0],
+      //     DaoNFT_abi,
+      //     signer
+      //   );
+      //   setDAONFT(DAONFT);
+      // }
+      // }
+      // if (contractAddresses.Whitelist[window?.ethereum?.networkVersion]?.[0]) {
+      //   const whitelist = new ethers.Contract(
+      //     contractAddresses["Whitelist"][window.ethereum.networkVersion][0],
+      //     whitelist_abi,
+      //     signer
+      //   );
+
+      //   setWhitelistNFT(whitelist);
+      // }
     }
   }
+
+  const clientId = 'BAL307ODg2OdZPSKPDgSwrM45HW9OSGc - HuDjprjBOuUs2a_Cdl8i5IkQ1p--istRuE-UEwyiOOCeDIjwWocCZQ';
+
+
+  const initWeb3AuthSigner = async () => {
+    try {
+      const web3auth = new Web3Auth({
+        clientId,
+        chainConfig: {
+          chainNamespace: CHAIN_NAMESPACES.EIP155,
+          chainId: "0x13881",
+          rpcTarget: "https://rpc-mumbai.maticvigil.com/",
+        },
+      });
+
+      setWeb3auth(web3auth);
+      await web3auth.initModal();
+      const provider = await web3auth.connect();
+      const signer = new ethers.providers.Web3Provider(provider).getSigner();
+      setSigner(signer);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  console.log("provider", provider);
 
   useEffect(() => {
     const connect = async () => {
@@ -146,24 +178,30 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
+
   useEffect(() => {
-    setValues();
-  }, [chainId]);
+    if (user?.socialLogin) {
+      initWeb3AuthSigner();
+    }
+    else {
+      setValues();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       // if (token != null) {
-        const token = localStorage.getItem("token");
-        setToken(token);
-        const decodedToken = jwt_decode(token);
-        const user = decodedToken.data.user;
-        setUser(user);
-        setIsLoggedIn(true);
-        // if (!socket) {
-        //   console.log("socketttt---->", user._id);
-        //   connectSocket(user?._id);
-        // }
-        setValues();
+      const token = localStorage.getItem("token");
+      setToken(token);
+      const decodedToken = jwt_decode(token);
+      const user = decodedToken.data.user;
+      setUser(user);
+      setIsLoggedIn(true);
+      // if (!socket) {
+      //   console.log("socketttt---->", user._id);
+      //   connectSocket(user?._id);
+      // }
+      setValues();
       // } 
     }
     else {
@@ -187,13 +225,15 @@ export const AuthProvider = ({ children }) => {
         setUserProposals,
         asSeller,
         setAsSeller,
-        freelancoContract,
-        gigContract,
-        daoNFTContract,
-        whitelistNFT,
+        // freelancoContract,
+        // gigContract,
+        // daoNFTContract,
+        // whitelistNFT,
         signer,
+        setSigner,
         network,
         chainId,
+        setChainID,
         provider,
         skills,
         currentFreelancerData,
@@ -211,6 +251,9 @@ export const AuthProvider = ({ children }) => {
         setSearchedGigs,
         newMessageCount,
         setNewMessageCount,
+        web3auth,
+        setWeb3auth,
+        setProvider
       }}
     >
       {children}

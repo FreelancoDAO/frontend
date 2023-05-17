@@ -63,3 +63,14 @@ export const getProposalsOfClient = () => {
       .catch((err) => reject(err));
   });
 };
+
+export const socialLogin = (data) =>
+  new Promise((resolve, reject) => {
+    axiosInstance
+      .post(`/auth/socialLogin`, data)
+      .then((res) => {
+        console.log("res----------------------------->", res);
+        resolve(res.data);
+      })
+      .catch((err) => alert(err?.response?.data?.err));
+  });

@@ -1,15 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import ErrorBox from "../Validation/ErrorBox";
 import TxBox from "../Validation/TxBox";
 import { useSigner } from "wagmi";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
+const {
+  contractAddresses,
+  Freelanco_abi,
+} = require("../../constants");
 
 const MyGigActions = ({ proposalsData }) => {
   const router = useRouter();
-  const { user, freelancoContract } = useAuth();
+  const { user,signer,chainId } = useAuth();
   const [loading, setLoading] = useState(false);
   const interviewingProposals = [];
   const job = {};
@@ -21,7 +26,22 @@ const MyGigActions = ({ proposalsData }) => {
   const [showTxDialog, setShowTxDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
-  const { data: signer, isError, isLoading } = useSigner();
+  // const { data: signer, isError, isLoading } = useSigner();
+
+  const [freelancoContract, setFreelanco] = useState(undefined);
+  useEffect(() => {
+    if (
+      contractAddresses["Gig"][chainId]?.[0] &&
+      contractAddresses["Freelanco"][chainId]?.[0]
+    ) {
+      const FreelancoContract = new ethers.Contract(
+        contractAddresses["Freelanco"][chainId][0],
+        Freelanco_abi,
+      );
+      setFreelanco(FreelancoContract);
+    }
+  }
+    , [chainId]);
 
   console.log("PROPOSALS SENT: ", proposalsData);
 

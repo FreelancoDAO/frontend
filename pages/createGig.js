@@ -14,9 +14,14 @@ import TxBox from "../components/Validation/TxBox";
 import ErrorBox from "../components/Validation/ErrorBox";
 import { createGig } from "../api/gig";
 import { useSigner } from "wagmi";
+const { ethers } = require("ethers");
+const {
+  contractAddresses,
+  Gig_abi,
+} = require("../constants");
 
 const CreateFreelancerPage = () => {
-  const { user, isLogggedIn, gigContract, isConnected } = useAuth();
+  const { user, isLogggedIn, isConnected, chainId, signer } = useAuth();
   const { categories } = useGigs();
 
   const router = useRouter();
@@ -40,8 +45,9 @@ const CreateFreelancerPage = () => {
   const [txMessage, setTxMessage] = useState(undefined);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
-  const { data: signer, isError } = useSigner();
+  // const { data: signer, isError } = useSigner();
   const [isLoading, setIsLoading] = useState(false);
+  const [gigContract, setGigContract] = useState(undefined);
 
   const {
     register,
@@ -79,6 +85,17 @@ const CreateFreelancerPage = () => {
       setSubCategories(categories[0]?.items);
     }
   }, [categories]);
+
+  useEffect(() => {
+    if (contractAddresses["Gig"][chainId]?.[0] &&
+      contractAddresses["Freelanco"][chainId]?.[0]) {
+      const FreelancoContract = new ethers.Contract(
+        contractAddresses["Gig"][chainId][0],
+        Gig_abi
+      );
+      setGigContract(FreelancoContract);
+    }
+  }, [chainId]);
 
   const [jsonURI, setURI] = useState(undefined);
 
@@ -156,9 +173,8 @@ const CreateFreelancerPage = () => {
 
   const contractCall = async () => {
     try {
-      if (!signer) {
-        throw new Error("please connect your wallet");
-      }
+
+
       setIsMinted(false);
       setShowSubmitDialog(false);
       let contractWithSigner = gigContract.connect(signer);
@@ -718,187 +734,187 @@ const CreateFreelancerPage = () => {
                 <div
                   className={
                     (isShortTermSelected
-                  ? "h-48 w-1/2 border-8 shadow-md border-purple-200 "
-                  : "h-48 w-1/2 border-2 shadow-md") +
-                " flex justify-center hover:bg-blue-200 cursor-pointer transition ease-in-out delay-50 rounded-3xl items-center flex-col"
-              }
-              onClick={() => {
-                duration("short");
-                setIsShortTermSelected(true);
-              }}
-            >
-              <img
-                src="https://img.icons8.com/ios-glyphs/344/clock--v1.png"
-                alt=""
-                className="w-16 h-16"
-              />
-              <span className="font-bold  ">
-                Short term or part time work
-              </span>
-              <span className="text-sm text-gray-200">
-                Less than 30 hrs/week
-              </span>
-            </div>
-            <div
-              className={
-                (isShortTermSelected === false
-                  ? "h-48 w-1/2 border-8 shadow-md border-purple-200 hover:text-black"
-                  : "h-48 w-1/2 border-2 shadow-md") +
-                " flex justify-center hover:bg-blue-100 cursor-pointer transition ease-in-out delay-50 rounded-3xl items-center flex-col"
-              }
-              onClick={() => {
-                duration("long");
-                setIsShortTermSelected(false);
-              }}
-            >
-              <img src="cal.png" alt="" className="w-16 h-16" />
-              <span className="font-bold">Long term work</span>
-              <span className="text-sm text-gray-200">
-                Less than 30 hrs/week
-              </span>
-            </div>
-          </div>
-          {validationErrors.duration && (
-            <span className="text-red-500 capitalize">
-              {validationErrors.duration}
-            </span>
-          )}
+                      ? "h-48 w-1/2 border-8 shadow-md border-purple-200 "
+                      : "h-48 w-1/2 border-2 shadow-md") +
+                    " flex justify-center hover:bg-blue-200 cursor-pointer transition ease-in-out delay-50 rounded-3xl items-center flex-col"
+                  }
+                  onClick={() => {
+                    duration("short");
+                    setIsShortTermSelected(true);
+                  }}
+                >
+                  <img
+                    src="https://img.icons8.com/ios-glyphs/344/clock--v1.png"
+                    alt=""
+                    className="w-16 h-16"
+                  />
+                  <span className="font-bold  ">
+                    Short term or part time work
+                  </span>
+                  <span className="text-sm text-gray-200">
+                    Less than 30 hrs/week
+                  </span>
+                </div>
+                <div
+                  className={
+                    (isShortTermSelected === false
+                      ? "h-48 w-1/2 border-8 shadow-md border-purple-200 hover:text-black"
+                      : "h-48 w-1/2 border-2 shadow-md") +
+                    " flex justify-center hover:bg-blue-100 cursor-pointer transition ease-in-out delay-50 rounded-3xl items-center flex-col"
+                  }
+                  onClick={() => {
+                    duration("long");
+                    setIsShortTermSelected(false);
+                  }}
+                >
+                  <img src="cal.png" alt="" className="w-16 h-16" />
+                  <span className="font-bold">Long term work</span>
+                  <span className="text-sm text-gray-200">
+                    Less than 30 hrs/week
+                  </span>
+                </div>
+              </div>
+              {validationErrors.duration && (
+                <span className="text-red-500 capitalize">
+                  {validationErrors.duration}
+                </span>
+              )}
 
-          <div className="flex w-full h-20 justify-end items-end">
-            <button
-              className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
-              onClick={() => {
-                setCounter((prevState) => prevState - 1);
-              }}
-            >
-              Back
-            </button>
-            <button
-              className={
-                loading
-                  ? "p-4 rounded-3xl text-md text-white w-32"
-                  : "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8"}
-              onClick={async () => {
-                const p = handleValidation();
-                console.log("ppppppppppppppp", p);
-                if (p) {
-                  await sendJsonToBackend();
-                  setShowSubmitDialog(true);
-                }
-              }}
-            // onClick={submitGig}
-            // setLoading(true);
-            // postJob({
-            //   is_hourly: isHourlySelected ? "hourly" : "fixed",
-            //   job_length: isShortTermSelected ? "short" : "long",
-            //   title,
-            //   description: jd,
-            //   status: "open",
-            //   budget: price,
-            //   skills: skillsChosen,
-            //   company_posted: user?._id,
-            // }).then(() => {
-            //   setLoading(false);
-            //   navigate("/dashboard");
-            // });
-            // router.push("/seller");
-            >
-              {/* <span className="" onClick={() => submitGig()}> */}
-              <span className="">Submit</span>
-            </button>
-          </div>
-          <div
-            id="popup-modal"
-            tabindex="-1"
-            class={
-              showSubmitDialog === true
-                ? "absoluteCenter transition-all "
-                : "hidden"
-            }
-          >
-            <div class="relative bg-gray-800 rounded-lg shadow">
-              <button
-                type="button"
-                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                data-modal-hide="popup-modal"
-                onClick={() => setShowSubmitDialog(false)}
-              >
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                <span class="sr-only">Close modal</span>
-              </button>
-              <div class="p-6 text-center">
-                <svg
-                  aria-hidden="true"
-                  class="mx-auto mb-4 text-gray-400 w-14 h-14"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-                <h3 class="mb-2 text-lg font-normal text-gray-500">
-                  GIG Uploaded to{" "}
-                  <a
-                    href={"https:ipfs.io/ipfs/" + jsonURI}
-                    target="_blank"
-                    className="text-white underline"
-                  >
-                    IPFS
-                  </a>
-                  {/* <span className="text-blue-800 underline">
-                        Click here to see
-                      </span> */}
-                  {/* {proposalsData[selectedOrder]?.price} from{" "}
-                      {proposalsData[selectedOrder]?.user?.wallet_address}? */}
-                </h3>
-                <p className="my-2 mb-4 text-md font-normal text-gray-500">
-                  CID: {jsonURI}
-                </p>
+              <div className="flex w-full h-20 justify-end items-end">
                 <button
-                  data-modal-hide="popup-modal"
-                  type="button"
-                  // onClick={() => {
-                  //   acceptOffer(selectedOrder);
-                  // }}
-                  onClick={() => contractCall()}
-                  class="text-white bg-blue-800 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                  className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
+                  onClick={() => {
+                    setCounter((prevState) => prevState - 1);
+                  }}
                 >
-                  Mint
+                  Back
                 </button>
                 <button
-                  data-modal-hide="popup-modal"
-                  type="button"
-                  onClick={() => setShowSubmitDialog(false)}
-                  class="text-gray-500 bg-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                  className={
+                    loading
+                      ? "p-4 rounded-3xl text-md text-white w-32"
+                      : "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8"}
+                  onClick={async () => {
+                    const p = handleValidation();
+                    console.log("ppppppppppppppp", p);
+                    if (p) {
+                      await sendJsonToBackend();
+                      setShowSubmitDialog(true);
+                    }
+                  }}
+                // onClick={submitGig}
+                // setLoading(true);
+                // postJob({
+                //   is_hourly: isHourlySelected ? "hourly" : "fixed",
+                //   job_length: isShortTermSelected ? "short" : "long",
+                //   title,
+                //   description: jd,
+                //   status: "open",
+                //   budget: price,
+                //   skills: skillsChosen,
+                //   company_posted: user?._id,
+                // }).then(() => {
+                //   setLoading(false);
+                //   navigate("/dashboard");
+                // });
+                // router.push("/seller");
                 >
-                  No, cancel
+                  {/* <span className="" onClick={() => submitGig()}> */}
+                  <span className="">Submit</span>
                 </button>
               </div>
-            </div>
-          </div>
-        </>
+              <div
+                id="popup-modal"
+                tabindex="-1"
+                class={
+                  showSubmitDialog === true
+                    ? "absoluteCenter transition-all "
+                    : "hidden"
+                }
+              >
+                <div class="relative bg-gray-800 rounded-lg shadow">
+                  <button
+                    type="button"
+                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    data-modal-hide="popup-modal"
+                    onClick={() => setShowSubmitDialog(false)}
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                  </button>
+                  <div class="p-6 text-center">
+                    <svg
+                      aria-hidden="true"
+                      class="mx-auto mb-4 text-gray-400 w-14 h-14"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <h3 class="mb-2 text-lg font-normal text-gray-500">
+                      GIG Uploaded to{" "}
+                      <a
+                        href={"https:ipfs.io/ipfs/" + jsonURI}
+                        target="_blank"
+                        className="text-white underline"
+                      >
+                        IPFS
+                      </a>
+                      {/* <span className="text-blue-800 underline">
+                        Click here to see
+                      </span> */}
+                      {/* {proposalsData[selectedOrder]?.price} from{" "}
+                      {proposalsData[selectedOrder]?.user?.wallet_address}? */}
+                    </h3>
+                    <p className="my-2 mb-4 text-md font-normal text-gray-500">
+                      CID: {jsonURI}
+                    </p>
+                    <button
+                      data-modal-hide="popup-modal"
+                      type="button"
+                      // onClick={() => {
+                      //   acceptOffer(selectedOrder);
+                      // }}
+                      onClick={() => contractCall()}
+                      class="text-white bg-blue-800 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                    >
+                      Mint
+                    </button>
+                    <button
+                      data-modal-hide="popup-modal"
+                      type="button"
+                      onClick={() => setShowSubmitDialog(false)}
+                      class="text-gray-500 bg-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                    >
+                      No, cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
+        </div>
       </div>
-    </div>
     </div >
   );
 };

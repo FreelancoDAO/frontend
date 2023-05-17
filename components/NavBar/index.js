@@ -35,6 +35,8 @@ const NavBar = () => {
     theme,
     searchedGigs,
     setSearchedGigs,
+    setProvider,
+    web3auth
   } = useAuth();
 
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -102,8 +104,11 @@ const NavBar = () => {
     }
   };
 
-  const signOut = () => {
+  const signOut = async () => {
     localStorage.removeItem("token");
+    if (web3auth) {
+      await web3auth.logout();
+    }
     router.push("/login");
     setUser(null);
     setIsLoggedIn(false);

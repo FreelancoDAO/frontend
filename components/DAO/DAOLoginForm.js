@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import useAuth from "../../hooks/useAuth";
 import { useRouter } from "next/router";
 import ErrorBox from "../Validation/ErrorBox";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 import { requestMessage, verifySignature } from "../../api/auth";
+
+const {
+  contractAddresses,
+  DaoNFT_abi,
+} = require("../constants");
 
 const { ethers } = require("ethers");
 
@@ -19,8 +24,8 @@ const LoginForm = ({ setWantsToLogin }) => {
     AsSeller,
     setAsSeller,
     chainId,
+    signer,
     isWrongNetwork,
-    daoNFTContract,
   } = useAuth();
   const router = useRouter();
 
@@ -30,6 +35,18 @@ const LoginForm = ({ setWantsToLogin }) => {
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const { signMessageAsync } = useSignMessage();
+
+  const [daoNFTContract, setDAONFT] = useState(undefined);
+
+  useEffect(() => {
+    if (contractAddresses.DaoNFT[chainId][0]) {
+      const DAONFT = new ethers.Contract(
+        contractAddresses["DaoNFT"][chainId][0],
+        DaoNFT_abi,
+      );
+      setDAONFT(DAONFT);
+    }
+  }, [chainId]);
 
   const getData = async (userArg) => {
     let res;

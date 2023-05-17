@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 
 import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
@@ -7,6 +8,10 @@ import useAuth from "../../hooks/useAuth";
 import ErrorBox from "../Validation/ErrorBox";
 import TxBox from "../Validation/TxBox";
 import { useNetwork, useSigner } from "wagmi";
+const {
+  contractAddresses,
+  whitelist_abi,
+} = require("../../constants");
 
 export function Countdown() {
   const [countdown, setCountdown] = useState({});
@@ -63,14 +68,25 @@ export function Countdown() {
 }
 
 export const Button = ({ text }) => {
-  const { whitelistNFT, chainId } = useAuth();
+  const { signer, chainId } = useAuth();
   const { chain } = useNetwork();
 
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [showTxDialog, setShowTxDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
-  const { data: signer, isError, isLoading } = useSigner();
+  // const { data: signer, isError, isLoading } = useSigner();
+  const [whitelistNFT, setWhitelistNFT] = useState(undefined);
+
+  useEffect(()=>{
+      if (contractAddresses.Whitelist[chainId]?.[0]) {
+        const whitelist = new ethers.Contract(
+          contractAddresses["Whitelist"][chainId][0],
+          whitelist_abi,
+        );
+       setWhitelistNFT(whitelist);
+      }
+      },[chainId])
 
   const router = useRouter();
   return (
@@ -96,7 +112,7 @@ export const Button = ({ text }) => {
               "_blank"
             );
           } else {
-            if (chain.id != 137) {
+            if (chainId != 137) {
               setErrorMessage("Please connect to Polygon Mainnet");
               setShowErrorDialog(true);
             } else {
