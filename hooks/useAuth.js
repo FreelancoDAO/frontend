@@ -62,31 +62,31 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const clientId = 'BAL307ODg2OdZPSKPDgSwrM45HW9OSGc - HuDjprjBOuUs2a_Cdl8i5IkQ1p--istRuE-UEwyiOOCeDIjwWocCZQ';
+  // const clientId = 'BAL307ODg2OdZPSKPDgSwrM45HW9OSGc - HuDjprjBOuUs2a_Cdl8i5IkQ1p--istRuE-UEwyiOOCeDIjwWocCZQ';
 
 
-  const initWeb3AuthSigner = async () => {
-    try {
-      const web3auth = new Web3Auth({
-        clientId,
-        chainConfig: {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x13881",
-          rpcTarget: "https://rpc-mumbai.maticvigil.com/",
-        },
-      });
+  // const initWeb3AuthSigner = async () => {
+  //   try {
+  //     const web3auth = new Web3Auth({
+  //       clientId,
+  //       chainConfig: {
+  //         chainNamespace: CHAIN_NAMESPACES.EIP155,
+  //         chainId: "0x13881",
+  //         rpcTarget: "https://rpc-mumbai.maticvigil.com/",
+  //       },
+  //     });
 
-      setWeb3auth(web3auth);
+  //     setWeb3auth(web3auth);
 
-      await web3auth.initModal();
-      const provider = await web3auth.connect();
-      const signer = new ethers.providers.Web3Provider(provider).getSigner();
-      setSigner(signer);
+  //     await web3auth.initModal();
+  //     const provider = await web3auth.connect();
+  //     const signer = new ethers.providers.Web3Provider(provider).getSigner();
+  //     setSigner(signer);
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
-    initWeb3AuthSigner();
+    // initWeb3AuthSigner();
     setValues();
   }, [user]);
 

@@ -14,7 +14,7 @@ const {
 
 const MyGigActions = ({ proposalsData }) => {
   const router = useRouter();
-  const { user,signer,chainId } = useAuth();
+  const { user, signer, chainId } = useAuth();
   const [loading, setLoading] = useState(false);
   const interviewingProposals = [];
   const job = {};
@@ -58,7 +58,7 @@ const MyGigActions = ({ proposalsData }) => {
       let contractWithSigner = freelancoContract.connect(signer);
       let tx = await contractWithSigner.approveOffer(
         BigInt(proposalsData[selectedOrder]?.offerId),
-        { gasLimit: 500000 }
+        { gasLimit: 1000000 }
       );
       setShowTxDialog(true);
       setTxMessage(tx.hash);
@@ -91,7 +91,7 @@ const MyGigActions = ({ proposalsData }) => {
       let contractWithSigner = freelancoContract.connect(signer);
       let tx = await contractWithSigner.rejectOffer(
         BigInt(proposalsData[selectedOrder]?.offerId),
-        { gasLimit: 500000 }
+        { gasLimit: 1000000 }
       );
       setShowTxDialog(true);
       console.log(tx);
@@ -149,7 +149,7 @@ const MyGigActions = ({ proposalsData }) => {
                     <div className="flex flex-col">
                       <Link
                         href={`/freelancer-profile/${proposal?._id}`}
-                        // to={`/freelancer-profile/6`}
+                      // to={`/freelancer-profile/6`}
                       >
                         <span className="font-bold text-md hover:underline cursor-pointer">
                           {proposal?.client_address}
