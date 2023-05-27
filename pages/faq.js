@@ -34,9 +34,9 @@ const data = {
 const styles = {
   bgColor: "transparent",
   titleTextColor: "blue",
-  rowTitleColor: "black",
+  rowTitleColor: "white",
   rowContentColor: "grey",
-  arrowColor: "blue",
+  arrowColor: "white",
 };
 
 const config = {
@@ -47,8 +47,8 @@ const config = {
 
 const faq = () => {
   return (
-    <div className="px-40 py-20 pt-40 bg-white">
-      <h1 className="text-black text-3xl font-extrabold">FAQ</h1>
+    <div className="px-40 py-20 pt-40 bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 min-h-screen text-white">
+      <h1 className="text-white text-3xl font-extrabold">FAQ</h1>
       <Faq data={data} styles={styles} config={config} />
     </div>
   );

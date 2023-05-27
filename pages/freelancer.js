@@ -165,7 +165,7 @@ const CreateFreelancerPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-120px)]  bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 h-screen  ">
+    <div className="flex justify-center items-center min-h-[calc(100vh-120px)]  bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 min-h-screen  ">
       <TxBox
         show={showTxDialog}
         cancel={setShowTxDialog}

@@ -1,96 +1,66 @@
 [
-  { "type": "error", "name": "SpendMoreMatic", "inputs": [] },
-  { "type": "error", "name": "TransactionFailed", "inputs": [] },
   {
-    "type": "event",
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
-    "name": "OwnershipTransferred",
     "inputs": [
-      { "type": "address", "name": "previousOwner", "indexed": true },
-      { "type": "address", "name": "newOwner", "indexed": true }
-    ]
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistJoined",
+    "type": "event"
   },
   {
-    "type": "event",
-    "anonymous": false,
-    "name": "Whitelist__Joined",
-    "inputs": [{ "type": "address", "indexed": true }]
-  },
-  {
-    "type": "function",
-    "name": "WHITELIST_FEES",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [],
-    "outputs": [{ "type": "uint256" }]
-  },
-  {
-    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "_whitelisted",
-    "constant": true,
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [{ "type": "uint256" }],
-    "outputs": [{ "type": "address" }]
+    "type": "function"
   },
   {
-    "type": "function",
-    "name": "isWhitelisted",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [{ "type": "address", "name": "_addr" }],
-    "outputs": [{ "type": "bool" }]
-  },
-  {
-    "type": "function",
+    "inputs": [],
     "name": "joinWhitelist",
-    "constant": false,
+    "outputs": [],
     "stateMutability": "payable",
-    "payable": true,
-    "gas": 29000000,
-    "inputs": [],
-    "outputs": []
+    "type": "function"
   },
   {
-    "type": "function",
+    "inputs": [],
     "name": "owner",
-    "constant": true,
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
-    "payable": false,
-    "gas": 29000000,
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "outputs": [{ "type": "address" }]
-  },
-  {
-    "type": "function",
-    "name": "renounceOwnership",
-    "constant": false,
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [],
-    "outputs": []
-  },
-  {
-    "type": "function",
-    "name": "transferOwnership",
-    "constant": false,
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [{ "type": "address", "name": "newOwner" }],
-    "outputs": []
-  },
-  {
-    "type": "function",
     "name": "withdraw",
-    "constant": false,
-    "payable": false,
-    "gas": 29000000,
-    "inputs": [],
-    "outputs": []
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]
