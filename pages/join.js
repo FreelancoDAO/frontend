@@ -55,13 +55,10 @@ const join = () => {
   useEffect(() => {
     const getData = async () => {
       if (wagmiSigner) {
-        const contract = new ethers.Contract(
-          whitelistAddress,
-          abi,
-          wagmiSigner
-        );
-        setIsWhitelistedAlready(await contract._whitelisted(address));
-        console.log(await contract._whitelisted(address));
+        if(whitelistNFT) {
+        setIsWhitelistedAlready(await whitelistNFT._whitelisted(address));
+        console.log(await whitelistNFT._whitelisted(address));
+        }
       }
     };
     getData();
