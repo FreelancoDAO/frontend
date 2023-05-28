@@ -27,6 +27,7 @@ const ErrorBox = ({ cancel, show, errorMessage }) => {
           type="button"
           class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           data-modal-hide="popup-modal"
+          onClick={() => cancel(false)}
         >
           <svg
             aria-hidden="true"

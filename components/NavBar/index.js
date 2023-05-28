@@ -177,15 +177,16 @@ const NavBar = () => {
           // router.pathname === "/dao" ||
           // router.pathname.includes("/dao-home") ||
           // router.pathname === "/join" ||
-          // router.pathname == "/settings"
-          //   ?
+          router.pathname == "/login"
+            ?
+            {zIndex: 10000} :
           {
             zIndex: 10000,
             background: "rgba(0, 0, 0, 0.5)",
             color: "#f1f1f1",
           }
 
-          // : {}
+          
         }
       >
         <h2 className="cursor-pointer flex items-center">

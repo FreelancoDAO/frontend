@@ -5,12 +5,8 @@ import Image from "next/image";
 const LoginHeader = () => {
   return (
     <div
-      className="mt-20 flex flex-col items-center p-8 cursor-pointer rounded-xl"
-      style={{
-        zIndex: 10000,
-        background: "rgba(0, 0, 0, 0.5)",
-        color: "#f1f1f1",
-      }}
+      className="mt-20 flex flex-col items-center p-8 cursor-pointer rounded-xl mx-20"
+      
     >
       <Image
         src="/quotes.png"
@@ -20,9 +16,13 @@ const LoginHeader = () => {
         height={70}
         style={{
           filter: "brightness(0) invert(1)",
+          zIndex: 100,
         }}
       />
-      <h1 className="px-12 py-5 font-serif font-black text-2xl text-white text-center">
+      <h1 className="px-12 py-5 font-serif font-black text-2xl text-white text-center" style={{
+          filter: "brightness(0) invert(1)",
+          zIndex: 100,
+        }}>
         The blockchain does one <br /> thing: it replaces third-party <br />
         trust with mathematical <br /> proof that something <br /> happend
       </h1>

@@ -283,7 +283,7 @@ const CreateFreelancerPage = () => {
                       className="w-full h-[40vh] cursor-pointer pl-10"
                     />
                   ) : (
-                    <div className="flex-col w-full">
+                    <div className="flex-col w-full ">
                       <label
                         htmlFor="email"
                         className="text-sm font-semibold text-gray-500 ml-4 -mb-10"
@@ -291,9 +291,9 @@ const CreateFreelancerPage = () => {
                       <div className="flex items-center justify-center w-full">
                         <label
                           for="dropzone-file"
-                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 ml-4"
+                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-900 ml-4"
                         >
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6 ">
                             <svg
                               aria-hidden="true"
                               className="w-10 h-10 mb-3 text-gray-400"
