@@ -37,7 +37,7 @@ const MainPage = () => (
       </div>
     </section>
 
-    <section class="bg-black opacity-95 lg:pl-0 md:px-20 sm:px-20 px-20">
+    <section class="bg-black opacity-95 lg:pl-20 md:px-20 sm:px-20 px-20">
       <div class="max-w-screen-xl px-4 py-8 mx-auto space-y-12 lg:space-y-20 lg:py-24 lg:px-6">
         <div class="items-center gap-8 lg:grid lg:grid-cols-2 xl:gap-16">
           <Image
@@ -202,6 +202,21 @@ const MainPage = () => (
     </section>
   </main>
 );
+
+const Header2 = () => <div className="bg-black opacity-95 lg:pl-0 md:px-20 sm:px-20 px-20 text-white">
+<header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="index.html">Arsha</a></h1>
+      
+       <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid" /></a>
+
+      
+
+    </div>
+  
+  </header>
+  </div>
 
 const HomePage = () => {
   return (
