@@ -157,10 +157,10 @@ export const MessageLeft = (props) => {
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp
     ? new Date(props.timestamp).getHours().toString().padStart(2, "0") +
-      ":" +
-      new Date(props.timestamp).getMinutes().toString().padStart(2, "0")
+    ":" +
+    new Date(props.timestamp).getMinutes().toString().padStart(2, "0")
     : "";
-  const photoURL = props.photoURL ? props.photoURL : "/polygon.png";
+  const photoURL = props.photoURL ? props.photoURL : "/wolf.jpg";
   const displayName = props.displayName;
   return (
     <>
@@ -188,27 +188,27 @@ export const MessageLeft = (props) => {
             style={
               props.type == "Offer"
                 ? {
-                    position: "relative",
-                    marginLeft: "20px",
-                    marginBottom: "0.4px",
-                    padding: "10px",
-                    textAlign: "left",
-                    color: "white",
-                    font: "400 .9em 'Open Sans', sans-serif",
-                    border: "1px solid #97C6E3",
-                    borderRadius: "10px",
-                    "&:after": {
-                      content: "''",
-                      position: "absolute",
-                      width: "0",
-                      height: "0",
-                      borderTop: "15px solid #A8DDFD",
-                      borderLeft: "15px solid transparent",
-                      borderRight: "15px solid transparent",
-                      top: "0",
-                      left: "-15px",
-                    },
-                  }
+                  position: "relative",
+                  marginLeft: "20px",
+                  marginBottom: "0.4px",
+                  padding: "10px",
+                  textAlign: "left",
+                  color: "white",
+                  font: "400 .9em 'Open Sans', sans-serif",
+                  border: "1px solid #97C6E3",
+                  borderRadius: "10px",
+                  "&:after": {
+                    content: "''",
+                    position: "absolute",
+                    width: "0",
+                    height: "0",
+                    borderTop: "15px solid #A8DDFD",
+                    borderLeft: "15px solid transparent",
+                    borderRight: "15px solid transparent",
+                    top: "0",
+                    left: "-15px",
+                  },
+                }
                 : classes.messageBlue
             }
           >
@@ -319,8 +319,8 @@ export const MessageRight = (props) => {
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp
     ? new Date(props.timestamp).getHours().toString().padStart(2, "0") +
-      ":" +
-      new Date(props.timestamp).getMinutes().toString().padStart(2, "0")
+    ":" +
+    new Date(props.timestamp).getMinutes().toString().padStart(2, "0")
     : "";
   return (
     <div
@@ -341,7 +341,7 @@ export const MessageRight = (props) => {
             </div>
           )
         ) : // <div style={classes.messageTimeStampRight}>{timestamp}</div>
-        null}
+          null}
         {ext === "document" ? (
           <p style={classes.messageContent}>
             <a href={message} target="_blank">

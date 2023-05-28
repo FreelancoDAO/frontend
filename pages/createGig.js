@@ -64,9 +64,9 @@ const CreateFreelancerPage = () => {
     mode: "onChange",
     defaultValues: {
       plans: [
-        { price: 0, package_description: "" },
-        { price: 0, package_description: "" },
-        { price: 0, package_description: "" },
+        { price: "", package_description: "" },
+        { price: "", package_description: "" },
+        { price: "", package_description: "" },
       ],
     },
   });
@@ -77,6 +77,10 @@ const CreateFreelancerPage = () => {
     control,
     name: "skill",
   });
+  useEffect(() => {
+    setValidationErrors("");
+  }, [data])
+
 
   useEffect(() => {
     if (categories) {
@@ -383,7 +387,7 @@ const CreateFreelancerPage = () => {
                     <select
                       name="category"
                       {...register("category")}
-                      className="bg-transparent my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
+                      className=" bg-gray-900 text-gray-100 my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
                       value={data.category}
                       onChange={(e) => {
                         setCat(e);
@@ -414,7 +418,7 @@ const CreateFreelancerPage = () => {
                       <select
                         name="sub_category"
                         {...register("sub_category")}
-                        className="bg-transparent my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
+                        className=" bg-gray-900 text-gray-100 my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
                         value={data?.sub_category}
                         onChange={(e) => {
                           setValue("sub_category", e.target.value);
@@ -492,7 +496,7 @@ const CreateFreelancerPage = () => {
                       </label>
                     </div>
                     {validationErrors.image && (
-                      <div className="text-red-500 capitalize">
+                      <div className="text-red-500 capitalize mx-6">
                         {validationErrors.image}
                       </div>
                     )}
@@ -574,7 +578,7 @@ const CreateFreelancerPage = () => {
           )}
           {counter === 2 && (
             <>
-              <label className="block font-bold text-xl my-16">Skills:</label>
+              <label className="block font-bold text-xl my-6">Skills:</label>
               <ReactSelect
                 options={skillOptions}
                 isMulti
@@ -586,7 +590,7 @@ const CreateFreelancerPage = () => {
                 onChange={handleChange}
                 allowSelectAll={true}
                 value={skill.optionSelected}
-                className="block w-full bg-gray-200 text-black rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                className="block w-full text-black rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 styles={{
                   control: (provided, state) => ({
                     ...provided,

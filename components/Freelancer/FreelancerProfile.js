@@ -3,7 +3,14 @@ import EditModal from "./EditModal";
 import Link from "next/link";
 import useAuth from "../../hooks/useAuth";
 import { useRouter } from "next/router";
+import { useForm, useWatch, useFieldArray } from "react-hook-form";
 import Image from "next/image";
+import { ethers } from 'ethers';
+const {
+  contractAddresses,
+  Freelanco_abi,
+} = require("../../constants");
+
 
 export const EditRow = ({ setting, allowEdit }) => {
   const [{ activate, deactivate }, setState] = useState({
@@ -39,14 +46,88 @@ const YourProfile = ({
   freelancerUser,
   setFreelancerUser,
 }) => {
-  const { user, currentFreelancerData, setCurrentFreelancerData } = useAuth();
+  const [showModal, setShowModal] = useState(false);
+  const { user, chainId, signer, currentFreelancerData, setCurrentFreelancerData } = useAuth();
   const router = useRouter();
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset: resetFormState,
+    setValue,
+    getValues,
+    trigger,
+    unregister,
+  } = useForm({
+    mode: "onChange",
+  });
+  const data = useWatch({ control });
+  console.log(data);
 
   let freelancerData = null;
   console.log(user);
 
   const allowEdit = user?.freelancer_ref !== null;
   const [completenss, setcompletenss] = useState(undefined);
+
+  const [freelancoContract, setFreelanco] = useState(undefined);
+  useEffect(() => {
+    if (
+      contractAddresses["Gig"][chainId]?.[0] &&
+      contractAddresses["Freelanco"][chainId]?.[0]
+    ) {
+      const FreelancoContract = new ethers.Contract(
+        contractAddresses["Freelanco"][chainId][0],
+        Freelanco_abi,
+      );
+      setFreelanco(FreelancoContract);
+    }
+  }
+    , [chainId]);
+
+  const boostProfile = async () => {
+    console.log("hoooo");
+    if (!data?.lock_amount || !data?.deadline) {
+      alert("fill both details.....")
+    }
+    try {
+      console.log(
+        "amount will be locked ",
+      );
+      if (!signer) {
+        throw new Error("please connect your wallet");
+      }
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      const _deadline =
+        (Math.floor(new Date(data.deadline).getTime() / 1000) -
+          currentTimestamp) /
+        12;
+
+      let contractWithSigner = freelancoContract.connect(signer);
+
+      let tx = await contractWithSigner.boostProfile(
+        Math.floor(_deadline),
+        {
+          value: ethers.utils.parseEther(
+            Math.floor(data.lock_amount / 1.11).toString()
+          ),
+          gasLimit: 1000000,
+        }
+      );
+      setShowTxDialog(true);
+      setTxMessage(tx.hash);
+      await tx.wait();
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  const handleChange = () => {
+
+  }
 
   useEffect(() => {
     if (currentFreelancerData) {
@@ -85,45 +166,45 @@ const YourProfile = ({
   const settings =
     freelancerData !== null
       ? [
-          {
-            title: "Profile Status",
-            desc: freelancerData?.profile_status,
-            id: "1",
-            callback: "",
-          },
-          {
-            title: "Job Title",
-            desc: freelancerData?.occupation,
-            id: "2",
-            callback: "",
-          },
-          {
-            title: "Your Category",
-            desc: freelancerData?.category,
-            id: "3",
-            callback: "",
-          },
-        ]
+        {
+          title: "Profile Status",
+          desc: freelancerData?.profile_status,
+          id: "1",
+          callback: "",
+        },
+        {
+          title: "Job Title",
+          desc: freelancerData?.occupation,
+          id: "2",
+          callback: "",
+        },
+        {
+          title: "Your Category",
+          desc: freelancerData?.category,
+          id: "3",
+          callback: "",
+        },
+      ]
       : [
-          {
-            title: "Profile Status",
-            desc: user?.freelancer?.profile_status,
-            id: "1",
-            callback: "",
-          },
-          {
-            title: "Job Title",
-            desc: user?.freelancer?.occupation,
-            id: "2",
-            callback: "",
-          },
-          {
-            title: "Your Category",
-            desc: user?.freelancer?.category,
-            id: "3",
-            callback: "",
-          },
-        ];
+        {
+          title: "Profile Status",
+          desc: user?.freelancer?.profile_status,
+          id: "1",
+          callback: "",
+        },
+        {
+          title: "Job Title",
+          desc: user?.freelancer?.occupation,
+          id: "2",
+          callback: "",
+        },
+        {
+          title: "Your Category",
+          desc: user?.freelancer?.category,
+          id: "3",
+          callback: "",
+        },
+      ];
 
   router?.query?.freelancer
     ? console.log("FREL :", JSON.parse(router?.query?.freelancer).workSamples)
@@ -138,6 +219,58 @@ const YourProfile = ({
         color: "#f1f1f1",
       }}
     >
+      {showModal && (
+        <div tabindex="-1" class="absoluteCenter bg-gray-900  z-50">
+          <div class="relative">
+            <div class="relative rounded-lg shadow border-blue-100 border-2 px-10 py-20">
+              <div className="text-2xl flex justify-center py-4">    Boost your profile by locking some ethers</div>
+              <div className="flex justify-between w-full items-center my-4 mx-2">
+                <p className="text-lg leading-4 text-gray-300">
+                  amount $
+                </p>
+                <input
+                  required
+                  {...register("lock_amount")}
+                  name="lock_amount"
+                  type="number"
+                  className="mr-2  leading-4  placeholder:italic placeholder:text-slate-400 block bg-gray-100 bg-opacity-5 h-12 border border-slate-300 rounded-md py-2 pl-3 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm text-white"
+                />
+              </div>
+              <div className="flex justify-between w-full items-center my-4">
+                <p className="text-lg leading-4 text-gray-300">Choose Deadline</p>
+                <div>
+                  <input
+                    required
+                    type="date"
+                    {...register("deadline")}
+                    className="bg-gray-400 text-black"
+                  // selected={startDate}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between my-2 ">
+                <button
+                  data-modal-hide="popup-modal"
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  class="text-white bg-black hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                >
+                  Cancel
+                </button>
+                <button
+                  data-modal-hide="popup-modal"
+                  type="button"
+                  onClick={() => boostProfile()}
+                  class="text-white bg-black hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+      }
       {!router.query.freelancer && (
         <div className="flex justify-center items-center h-32 flex-col">
           {currentFreelancerData?.awsImageLink && (
@@ -168,7 +301,7 @@ const YourProfile = ({
             {freelancerData != null
               ? freelancerData.occupation
               : currentFreelancerData?.occupation ||
-                user?.freelancer?.occupation}
+              user?.freelancer?.occupation}
           </span>
         </div>
       )}
@@ -190,6 +323,7 @@ const YourProfile = ({
                       style={{
                         filter: "brightness(0) invert(1)",
                       }}
+                      onClick={() => setShowModal(!showModal)}
                     />
                   </div>
                 </div>
@@ -218,12 +352,12 @@ const YourProfile = ({
                     {currentFreelancerData?.education?.length == 0
                       ? "Add education so clients know you're a pro"
                       : currentFreelancerData?.workExperience?.length == 0
-                      ? "Add work experience so clients know you're a pro"
-                      : currentFreelancerData?.projects?.length == 0
-                      ? "Add projects so clients know you're a pro"
-                      : user?.freelancer?.education?.length != 0
-                      ? "Add projects so clients know you're a pro"
-                      : ""}
+                        ? "Add work experience so clients know you're a pro"
+                        : currentFreelancerData?.projects?.length == 0
+                          ? "Add projects so clients know you're a pro"
+                          : user?.freelancer?.education?.length != 0
+                            ? "Add projects so clients know you're a pro"
+                            : ""}
                   </p>
                   <div className="bg-blue-800 h-8 w-10 p-2 cursor-pointer hover:scale-110 rounded-full relative -right-4 flex justify-center items-center">
                     <img
@@ -265,7 +399,7 @@ const YourProfile = ({
         </>
       )}
       {router.query.freelancer &&
-      JSON.parse(router?.query?.freelancer).workSamples?.length > 0 ? (
+        JSON.parse(router?.query?.freelancer).workSamples?.length > 0 ? (
         JSON.parse(router?.query?.freelancer).workSamples.map((sample) => (
           <figure class="flex flex-col items-center justify-center p-8 text-center bg-white border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r">
             <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8">

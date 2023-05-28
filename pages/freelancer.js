@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, useWatch, useFieldArray } from "react-hook-form";
 import axiosInstance from "../axios";
 import { addFreelancer } from "../api/freelancer";
@@ -48,6 +48,14 @@ const CreateFreelancerPage = () => {
   const [showTxDialog, setShowTxDialog] = useState(false);
   const [txMessage, setTxMessage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setValue("category", categories?.[0]?.title)
+  }, [categories])
+
+  useEffect(() => {
+    setValidationErrors("");
+  }, [data])
 
   const [skill, setSkill] = useState([]);
 
@@ -170,7 +178,7 @@ const CreateFreelancerPage = () => {
         show={showTxDialog}
         cancel={setShowTxDialog}
         txMessage={txMessage}
-        // routeToPush={"/client-profile"}
+      // routeToPush={"/client-profile"}
       />
       <div className="mt-20 w-[calc(70vw)] shadow-lg   bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 shadow-md rounded-lg backdrop-blur-lg transition-all duration-500 text-white " style={{ boxShadow: '6px 10px 37px 8px rgba(0,0,0,0.75)' }}>
         <div className="h-16 w-full flex justify-start items-center border-b pl-8">
@@ -436,7 +444,7 @@ const CreateFreelancerPage = () => {
 
                   <div className="flex w-full h-24 justify-end items-end">
                     <button
-                        className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
+                      className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
                       onClick={() => {
                         setCounter((prevState) => prevState - 1);
                       }}
@@ -444,7 +452,7 @@ const CreateFreelancerPage = () => {
                       Back
                     </button>
                     <button
-                        className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
+                      className="bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 hover:from-blue-800 hover:to-gray-700 p-4 shadow-sm rounded-3xl text-md text-white px-8 mr-2"
                       // onClick={() => {
                       //   // setCounter((prevState) => prevState + 1);
                       //   updateUser();

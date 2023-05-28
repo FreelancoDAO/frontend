@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { markRead } from "../../api/notification";
 
 function NotificationCard({ notification, getNotifications }) {
+
+
 
   const handleMarkAsRead = async (id) => {
     await markRead(id);
@@ -26,7 +28,7 @@ function NotificationCard({ notification, getNotifications }) {
   // };
 
   return (
-    <div className={`bg-gray-700 rounded-lg p-4 mb-2 transition-all duration-300 ${notification.read ? "opacity-50" : "opacity-100 hover:bg-gray-600"} w-76 max-w-sm`}>
+    <div className={` z-100 bg-gray-700 rounded-lg p-4 mb-2 transition-all duration-300 ${notification.read ? "opacity-50" : "opacity-100 hover:bg-gray-600"} w-76 max-w-sm`}>
       <div className="text-gray-300 text-sm mb-2 break-all overflow-hidden overflow-ellipsis whitespace-normal" style={{ overflowWrap: 'break-word' }}>{notification.message}</div>
       <div className="flex justify-end">
         {!notification.read && (
@@ -37,12 +39,12 @@ function NotificationCard({ notification, getNotifications }) {
             Mark as Read
           </button>
         )}
-        <button
+        {/* <button
           className="text-gray-500 text-sm hover:text-white"
         // onClick={() => onShowMessage(notification)}
         >
           Show Message
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -53,8 +55,25 @@ function NotificationCard({ notification, getNotifications }) {
 
 
 function NotificationList({ notifications, toggleNotifications, getNotifications }) {
+  const componentRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (componentRef.current && !componentRef.current.contains(event.target)) {
+        toggleNotifications(); // Call the onClose function when a click occurs outside the component
+      }
+    };
+
+    // Add event listener to detect clicks outside the component
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // Clean up the event listener when the component is unmounted
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [toggleNotifications]);
   return (
-    <div className="fixed right-0 top-16 bottom-16 z-50 w-76 overflow-auto ">
+    <div ref={componentRef} className="fixed right-0 top-16 bottom-16 z-50 w-76 overflow-auto ">
       <div className="bg-gray-800 rounded-lg p-4 shadow-lg backdrop-filter backdrop-blur-md">
         <div className="flex justify-between items-center mb-2 sticky top-0 bg-gray-800 p-4">
           <h3 className="text-lg font-bold text-gray-300">Notifications</h3>

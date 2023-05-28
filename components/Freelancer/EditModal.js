@@ -37,6 +37,9 @@ const EditModal = ({
   const { user, skills, currentFreelancerData, setCurrentFreelancerData } =
     useAuth();
   const [skill, setSkill] = useState([]);
+  useEffect(() => {
+    setEducation((prevData) => ({ ...prevData, ["degree"]: degree[0] }))
+  }, [])
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -131,7 +134,7 @@ const EditModal = ({
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-m rounded-lg w-full p-2.5 border-blue-100 border-2"
               />
               <p
                 id="helper-text-explanation"
@@ -208,7 +211,7 @@ const EditModal = ({
               </label>
               <input
                 required
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
                 name="role"
                 value={experience.role}
                 onChange={handleExperienceChange}
@@ -218,7 +221,7 @@ const EditModal = ({
               </label>
               <input
                 required
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
                 name="company"
                 value={experience.company}
                 onChange={handleExperienceChange}
@@ -229,6 +232,7 @@ const EditModal = ({
               <div className="flex justify-between w-full items-center">
                 <div>
                   <input
+                    className="text-black"
                     required
                     type="date"
                     name="startDate"
@@ -244,6 +248,7 @@ const EditModal = ({
                 <div>
                   <input
                     required
+                    className="text-black"
                     type="date"
                     name="endDate"
                     value={experience.endDate}
@@ -266,7 +271,7 @@ const EditModal = ({
               </label>
               <select
                 name="degree"
-                className="bg-transparent my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
+                className="bg-black my-2 py-2 border-transparent rounded-lg px-2 font-light w-full focus:border-transparent active:border-transparent focus-visible:border-transparent"
                 value={education.degree}
                 onChange={handleEducationChange}
               >
@@ -280,7 +285,7 @@ const EditModal = ({
                 College Name
               </label>
               <input
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className=" bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
                 name="collegeName"
                 value={education.collegeName}
                 onChange={handleEducationChange}
@@ -291,6 +296,7 @@ const EditModal = ({
               <div className="flex justify-between w-full items-center">
                 <div>
                   <input
+                    className="text-black"
                     type="date"
                     name="startDate"
                     value={education.startDate}
@@ -304,6 +310,7 @@ const EditModal = ({
               <div className="flex justify-between w-full items-center">
                 <div>
                   <input
+                    className="text-black"
                     type="date"
                     name="endDate"
                     value={education.endDate}
@@ -325,7 +332,7 @@ const EditModal = ({
                 name="title"
                 value={projects.title}
                 onChange={handleProjectChange}
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
               />
               <label className="block mb-2 text-sm font-medium text-white">
                 description
@@ -334,7 +341,7 @@ const EditModal = ({
                 name="description"
                 value={projects.description}
                 onChange={handleProjectChange}
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
               />
               <label className="block mb-2 text-sm font-medium text-white">
                 Github URL
@@ -343,7 +350,7 @@ const EditModal = ({
                 name="githubURL"
                 value={projects.githubURL}
                 onChange={handleProjectChange}
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
               />
               <label className="block mb-2 text-sm font-medium text-white">
                 Live URL
@@ -352,7 +359,7 @@ const EditModal = ({
                 name="liveURL"
                 value={projects.liveURL}
                 onChange={handleProjectChange}
-                className="bg-gray-50 text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
+                className="bg-black text-white text-sm rounded-lg w-full p-2.5 border-blue-100 border-2"
               />
               <label className="block mb-2 text-sm font-medium text-white">
                 Start date
@@ -360,6 +367,7 @@ const EditModal = ({
               <div className="flex justify-between w-full items-center">
                 <div>
                   <input
+                    className="text-black"
                     name="startDate"
                     value={projects.startDate}
                     onChange={handleProjectChange}
@@ -373,6 +381,7 @@ const EditModal = ({
               <div className="flex justify-between w-full items-center">
                 <div>
                   <input
+                    className="text-black"
                     name="endDate"
                     value={projects.endDate}
                     onChange={handleProjectChange}

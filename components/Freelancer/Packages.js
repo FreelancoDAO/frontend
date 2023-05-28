@@ -36,6 +36,9 @@ const Packages = ({ register, control, setValue }) => {
               selectedTab === 0 ? "bg-gray-400" : ""
             } text-gray-200 font-medium py-2 px-4 rounded-l-lg hover:bg-gray-900 focus:outline-none`}
             onClick={() => handleChange(0)}
+            style={{
+              borderBottom: selectedTab === 0 ? "2px solid blue" : "none",
+            }}
           >
             Basic
           </button>
@@ -44,6 +47,9 @@ const Packages = ({ register, control, setValue }) => {
               selectedTab === 1 ? "bg-gray-400" : ""
             } text-gray-200 font-medium py-2 px-4 hover:bg-gray-900 focus:outline-none`}
             onClick={() => handleChange(1)}
+            style={{
+              borderBottom: selectedTab === 1 ? "2px solid blue" : "none",
+            }}
           >
             Standard
           </button>
@@ -52,6 +58,9 @@ const Packages = ({ register, control, setValue }) => {
               selectedTab === 2 ? "bg-gray-400" : ""
             } text-gray-200 font-medium py-2 px-4 rounded-r-lg hover:bg-gray-900 focus:outline-none`}
             onClick={() => handleChange(2)}
+            style={{
+              borderBottom: selectedTab === 2 ? "2px solid blue" : "none",
+            }}
           >
             Premium
           </button>
