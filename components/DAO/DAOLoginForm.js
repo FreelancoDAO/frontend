@@ -6,21 +6,12 @@ import ErrorBox from "../Validation/ErrorBox";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 import { requestMessage, verifySignature } from "../../api/auth";
 
-const {
-  contractAddresses,
-  DaoNFT_abi,
-} = require("../../constants");
+const { contractAddresses, DaoNFT_abi } = require("../../constants");
 
 const { ethers } = require("ethers");
 
 const LoginForm = ({ setWantsToLogin }) => {
-  const {
-    user,
-    setIsLoggedIn,
-    setToken,
-    setUser,
-    chainId,
-  } = useAuth();
+  const { user, setIsLoggedIn, setToken, setUser, chainId, signer } = useAuth();
   const router = useRouter();
 
   const { address } = useAccount();
@@ -33,24 +24,28 @@ const LoginForm = ({ setWantsToLogin }) => {
   const [daoNFTContract, setDAONFT] = useState(undefined);
 
   useEffect(() => {
-    if (contractAddresses.DaoNFT[chainId]?.[0]) {
+    if (contractAddresses.DaoNFT[chain.id]?.[0]) {
       const DAONFT = new ethers.Contract(
-        contractAddresses["DaoNFT"][chainId]?.[0],
-        DaoNFT_abi,
+        contractAddresses["DaoNFT"][chain.id]?.[0],
+        DaoNFT_abi
       );
+      console.log("chaindi:", DAONFT);
       setDAONFT(DAONFT);
     }
-  }, [chainId]);
+  }, [chain.id]);
 
   const getData = async (userArg) => {
     let res;
     try {
       if (user) {
-        res = await daoNFTContract.balanceOf(
-          ethers.utils.getAddress(user.wallet_address)
-        );
+        console.log("trying 1");
+        console.log(user);
+        const connectedContract = daoNFTContract.connect(signer);
+        res = await connectedContract.balanceOf(user.wallet_address);
       } else {
-        res = await daoNFTContract.balanceOf(
+        console.log("trying 2 ");
+        const connectedContract = daoNFTContract.connect(signer);
+        res = await connectedContract.balanceOf(
           ethers.utils.getAddress(userArg.wallet_address)
         );
       }
@@ -67,8 +62,10 @@ const LoginForm = ({ setWantsToLogin }) => {
         setErrorMessage("You are not a member");
       }
     } catch (e) {
-      setShowErrorDialog(true);
-      setErrorMessage(e.toString());
+      console.log("E");
+      console.log("E:", e);
+      // setShowErrorDialog(true);
+      // setErrorMessage(e.toString());
     }
   };
 
@@ -89,6 +86,7 @@ const LoginForm = ({ setWantsToLogin }) => {
           e.preventDefault();
           // router.push("/dao-home");
           if (user) {
+            console.log("clicked");
             await getData();
           } else {
             if (address) {
@@ -97,8 +95,10 @@ const LoginForm = ({ setWantsToLogin }) => {
                 chain: chain.id,
                 network: "evm",
               };
+              console.log("user data: ", userData);
               // making a post request to our 'request-message' endpoint
               try {
+                console.log("trying");
                 const data = await requestMessage(userData);
                 const message = data.message;
 
@@ -126,6 +126,7 @@ const LoginForm = ({ setWantsToLogin }) => {
                 console.log(user);
                 await getData(decodedToken.data.user);
               } catch (e) {
+                console.log("e", e);
                 setShowErrorDialog(true);
                 setErrorMessage(e.toString());
                 setShowErrorDialog(true);

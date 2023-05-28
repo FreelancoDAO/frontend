@@ -9,9 +9,9 @@ const FreelancerDetails = ({ freelancer }) => {
 
   return (
     <div
-      className="flex px-20 space-x-8 pt-20 text-white blur-bg"
+      className="flex px-20 space-x-8 pt-20 text-white blur-bg bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 min-h-screen"
       style={{
-        backgroundImage: `url('/ff.jpeg')`,
+        // backgroundImage: `url('/ff.jpeg')`,
         "backdrop-filter": "blur(10px)",
       }}
     >

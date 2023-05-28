@@ -1,9 +1,11 @@
 import Image from "next/image";
 import useAuth from "../../hooks/useAuth";
 import { Fragment } from "react";
+import { useRouter } from "next/router";
 // import CloseIcon from '@mui/icons-material/Close';
 
 const NavDrawer = ({ conversationsData, setSelected, toggleChatList }) => {
+  const router = useRouter();
   const { user } = useAuth();
 
   function reduceWalletAddress(address, charLength) {
@@ -90,23 +92,46 @@ const NavDrawer = ({ conversationsData, setSelected, toggleChatList }) => {
                           height={50}
                           className="w-10 sm:w-12 h-10 sm:h-12 rounded-full"
                         />
-                        <div className="flex flex-col ml-5 text-left">
-                          <p className="font-bold text-md hover:underline cursor-pointer text-white">
-                            {data.freelancer?.[0]?.name}
-                          </p>
-                          <h5 className="mb-2 text-xs font-bold tracking-tight text-white">
-                            {data.freelancer?.[0].wallet_address
-                              ? reduceWalletAddress(
-                                  data.freelancer?.[0].wallet_address,
-                                  10
-                                )
-                              : ""}
-                          </h5>
-                          {data.freelancer?.[0].isTopRated && (
-                            <p className="text-white text-xs">
-                              Top Rated Seller
+                        <div className="flex justify-between">
+                          <div className="flex flex-col ml-5 text-left">
+                            <p className="font-bold text-md hover:underline cursor-pointer text-white">
+                              {data.freelancer?.[0]?.name}
                             </p>
-                          )}
+                            <h5 className="mb-2 text-xs font-bold tracking-tight text-white">
+                              {data.freelancer?.[0].wallet_address
+                                ? reduceWalletAddress(
+                                    data.freelancer?.[0].wallet_address,
+                                    10
+                                  )
+                                : ""}
+                            </h5>
+                            {data.freelancer?.[0].isTopRated && (
+                              <p className="text-white text-xs">
+                                Top Rated Seller
+                              </p>
+                            )}
+                            <h1 className="text-xs">
+                              {data?.offer_id?.slice(200)}
+                            </h1>
+                          </div>
+                          <div
+                            className="mx-2"
+                            onClick={() => {
+                              router.push("orders");
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M20 12l-8-8v4H4v8h8v4l8-8z"
+                                fill="white"
+                              />
+                            </svg>
+                          </div>
                         </div>
                       </li>
                     ) : (

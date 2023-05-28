@@ -41,6 +41,12 @@ export default ({ isTopRated = true, gig, proposalsAll = [] }) => {
       }}
       onMouseOver={() => setIsHover(true)}
       onMouseOut={() => setIsHover(false)}
+      onClick={() =>
+        router.push({
+          pathname: "/gig-detail",
+          query: { gig: JSON.stringify(gig._id) },
+        })
+      }
     >
       {gig?.awsImageLink && (
         <div className="image-container">
@@ -55,12 +61,6 @@ export default ({ isTopRated = true, gig, proposalsAll = [] }) => {
               padding: "12px",
               borderRadius: "2rem",
             }}
-            onClick={() =>
-              router.push({
-                pathname: "/gig-detail",
-                query: { gig: JSON.stringify(gig._id) },
-              })
-            }
           />
         </div>
       )}
@@ -120,14 +120,14 @@ export default ({ isTopRated = true, gig, proposalsAll = [] }) => {
         </div>
         <div className="flex items-center justify-between">
           <div className="flex space-x-1">
-            <div className="bg-white border-2 rounded-full flex items-center space-x-1 px-2 cursor-pointer h-6 justify-center hover:bg-gray-200">
+            <div className="bg-blue-300 border-2 rounded-full flex items-center space-x-1 px-2 cursor-pointer h-6 justify-center hover:bg-gray-200">
               <img
                 src="https://img.icons8.com/material-outlined/344/facebook-like--v1.png"
                 alt=""
-                className="h-4 w-4" //https://img.icons8.com/material-rounded/344/dislike.png
+                className="h-4 w-4 w" //https://img.icons8.com/material-rounded/344/dislike.png
               />
             </div>
-            <div className="bg-white border-2 rounded-full flex items-center space-x-2 px-2 cursor-pointer h-6 justify-center hover:bg-gray-200">
+            <div className="bg-blue-300 border-2 rounded-full flex items-center space-x-2 px-2 cursor-pointer h-6 justify-center hover:bg-gray-200">
               <img
                 src="https://img.icons8.com/material-rounded/344/dislike.png"
                 alt=""

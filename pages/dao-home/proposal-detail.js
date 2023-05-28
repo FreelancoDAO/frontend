@@ -313,21 +313,7 @@ const DaoProposalDetail = () => {
                   </div>
                 ))
               ) : (
-                <div className="min-h-[calc(70vh)] flex items-center justify-center flex-col">
-                  <img
-                    src={"/empty.png"}
-                    alt=""
-                    className="w-1/4 h-1/4 filter grayscale"
-                  />
-                  <p
-                    className="text-center text-gray-800 font-bold cursor-pointer"
-                    onClick={() => getConversations()}
-                  >
-                    Please try clicking{" "}
-                    <span className="text-blue-700">here</span> or refreshing if
-                    you don't see the conversation history
-                  </p>
-                </div>
+                <></>
               )}
               <div className="mt-5">
                 <label
