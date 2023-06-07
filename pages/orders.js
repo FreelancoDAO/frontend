@@ -144,7 +144,7 @@ const ClientProfile = () => {
       let tx = await contractWithSigner.disputeContract(
         BigInt(selectedOrder?.offerId),
         reason,
-        { gasLimit: 500000 }
+        { gasLimit: 5000000 }
       );
       setShowTxDialog(true);
       setTxMessage(tx.hash);

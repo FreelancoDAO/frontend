@@ -86,7 +86,7 @@ const OrderManagement = ({ approvedProosals }) => {
       let tx = await contractWithSigner.disputeContract(
         BigInt(approvedProosals[selectedOrder]?.offerId),
         reason,
-        { gasLimit: 500000 }
+        { gasLimit: 5000000 }
       );
       setShowTxDialog(true);
       setTxMessage(tx.hash);
