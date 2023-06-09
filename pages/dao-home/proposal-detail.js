@@ -154,7 +154,7 @@ const DaoProposalDetail = () => {
         </div>
 
         <div className="w-full">
-          <div className="h-32 border text-center flex items-center justify-center">
+          <div className="py-5 border text-center flex items-center justify-center">
             <p className="font-light text-medium text-gray-200 p-2">
               {" "}
               {proposal?.reason}
@@ -295,7 +295,7 @@ const DaoProposalDetail = () => {
               {daoMessages && daoMessages.length > 0 ? (
                 daoMessages.map((message) => (
                   <div className="w-full my-2">
-                    <div className="h-16 border border-gray-300 text-center flex items-center justify-center shadow-md rounded-lg backdrop-blur-lg">
+                    <div className="py-2 border border-gray-300 text-center flex items-center justify-center shadow-md rounded-lg backdrop-blur-lg">
                       <p className="font-light text-gray-100 ">
                         {message?.text}
                       </p>

@@ -23,11 +23,6 @@ const data = {
       content:
         "Great question! In FreelancoDAO, members can earn rewards by actively participating in the governance process. This includes voting on proposals, submitting proposals, and actively contributing to the community. Specifically, members who vote for successful proposals are rewarded with reputation tokens, which can be used to unlock higher-level NFTs. These NFTs can be traded for profits, providing an additional incentive for members to actively participate in the DAO's governance process. The amount that each member can withdraw is based on their reputation NFT, which is determined by their participation and success in previous DAO activities. The higher the reputation NFT, the more funds a member can withdraw. This ensures that members who have contributed more to the DAO have a greater say in how the funds are used.",
     },
-    {
-      title: "Why should I join the Whitelist?",
-      content:
-        "Joining the whitelist allows you to participate in the ICO at a discounted price before it becomes available to the public. By being whitelisted, you can have access to exclusive bonuses and incentives that are not available to non-whitelisted participants. This can be an opportunity to get in on a promising project early and potentially realize a greater return on your investment. Additionally, being part of a project's whitelist can also provide you with valuable information and updates about the project's progress and development.",
-    },
   ],
 };
 

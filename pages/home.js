@@ -47,12 +47,12 @@ const MainPage = () => (
             height={500}
             className="-rotate-3 rounded-2xl imageHide"
           />
-          <div class="text-white sm:text-lg dark:text-gray-400">
+          <div class="text-white sm:text-lg">
             <h2 class="mb-4 text-3xl font-extrabold tracking-tight text-white ''">
               <span className="text-4xl text-blue-700">AI Assisted</span>{" "}
               Decentralized Governance
             </h2>
-            <p class="mb-8 font-light lg:text-xl">
+            <p class="mb-8 font-light text-gray-400 lg:text-xl">
               The DAO operates through community consensus, where members can
               propose and vote on decisions, including disputes, project
               proposals, and treasury management. FreelancoDAO also integrates
@@ -203,20 +203,21 @@ const MainPage = () => (
   </main>
 );
 
-const Header2 = () => <div className="bg-black opacity-95 lg:pl-0 md:px-20 sm:px-20 px-20 text-white">
-<header id="header" class="fixed-top ">
-    <div class="container d-flex align-items-center">
+const Header2 = () => (
+  <div className="bg-black opacity-95 lg:pl-0 md:px-20 sm:px-20 px-20 text-white">
+    <header id="header" class="fixed-top ">
+      <div class="container d-flex align-items-center">
+        <h1 class="logo me-auto">
+          <a href="index.html">Arsha</a>
+        </h1>
 
-      <h1 class="logo me-auto"><a href="index.html">Arsha</a></h1>
-      
-       <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid" /></a>
-
-      
-
-    </div>
-  
-  </header>
+        <a href="index.html" class="logo me-auto">
+          <img src="assets/img/logo.png" alt="" class="img-fluid" />
+        </a>
+      </div>
+    </header>
   </div>
+);
 
 const HomePage = () => {
   return (
