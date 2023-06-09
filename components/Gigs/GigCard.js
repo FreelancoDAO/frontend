@@ -88,7 +88,7 @@ export default ({ isTopRated = true, gig, proposalsAll = [] }) => {
       </div>
       <div className="px-5 pb-5">
         <h5
-          class="my-2 h-14 text-white font-semibold hover:underline cursor-pointer"
+          class="my-5 text-white font-semibold hover:underline cursor-pointer"
           onClick={() => {
             router.push({
               pathname: "/gig-detail",

@@ -8,10 +8,7 @@ import ErrorBox from "../Validation/ErrorBox";
 import TxBox from "../Validation/TxBox";
 import { useSigner } from "wagmi";
 import { ethers } from "ethers";
-const {
-  contractAddresses,
-  Freelanco_abi,
-} = require("../../constants");
+const { contractAddresses, Freelanco_abi } = require("../../constants");
 
 const MyOrders = ({ ordersData }) => {
   const { user, signer, chainId } = useAuth();
@@ -27,7 +24,6 @@ const MyOrders = ({ ordersData }) => {
   const [txMessage, setTxMessage] = useState(undefined);
   // const { data: signer, isError, isLoading } = useSigner();
 
-
   const [freelancoContract, setFreelanco] = useState(undefined);
   useEffect(() => {
     if (
@@ -36,12 +32,11 @@ const MyOrders = ({ ordersData }) => {
     ) {
       const FreelancoContract = new ethers.Contract(
         contractAddresses["Freelanco"][chainId]?.[0],
-        Freelanco_abi,
+        Freelanco_abi
       );
       setFreelanco(FreelancoContract);
     }
-  }
-    , [chainId]);
+  }, [chainId]);
 
   console.log("ORDERS: ,", ordersData);
 
@@ -92,7 +87,7 @@ const MyOrders = ({ ordersData }) => {
       let tx = await contractWithSigner.disputeContract(
         BigInt(ordersData[selectedOrder]?.offerId),
         reason,
-        { gasLimit: 5000000 }
+        { gasLimit: 50000000 }
       );
       setShowTxDialog(true);
       setTxMessage(tx.hash);
@@ -132,8 +127,8 @@ const MyOrders = ({ ordersData }) => {
               onClick={() => setSeletedOrder(idx)}
               className={
                 showDialog === true ||
-                  showReviewDialog === true ||
-                  showDisputeDialog === true
+                showReviewDialog === true ||
+                showDisputeDialog === true
                   ? "flex flex-col opacity-5 "
                   : "flex flex-col "
               }
@@ -154,7 +149,7 @@ const MyOrders = ({ ordersData }) => {
                     <div className="flex flex-col">
                       <Link
                         href={`/freelancer-profile/${order?.user?._id}`}
-                      // to={`/freelancer-profile/6`}
+                        // to={`/freelancer-profile/6`}
                       >
                         <span className="font-bold text-md hover:underline cursor-pointer">
                           {order?.user?.wallet_address}
@@ -214,8 +209,8 @@ const MyOrders = ({ ordersData }) => {
                         order?.status == "Approved"
                           ? setShowDialog(true)
                           : order?.status == "Completed"
-                            ? alert("Waiting for Client to Approve")
-                            : null;
+                          ? alert("Waiting for Client to Approve")
+                          : null;
                       }}
                     >
                       {order?.status == "Completed"

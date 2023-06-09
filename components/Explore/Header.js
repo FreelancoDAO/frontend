@@ -27,7 +27,6 @@ const Header = () => {
         </div>
 
         <div className="flex-col items-center content justify-center border">
-
           <motion.div
             className="box"
             initial={{ opacity: 0, scale: 0.5 }}
@@ -35,12 +34,6 @@ const Header = () => {
             transition={{
               duration: 0.3,
               ease: [0, 0.71, 0.2, 1.01],
-              scale: {
-                type: "spring",
-                damping: 5,
-                stiffness: 100,
-                restDelta: 0.001
-              }
             }}
           >
             <div className="pl-12">
@@ -55,9 +48,8 @@ const Header = () => {
               <div className="mt-10">
                 <Button text={"Explore"} />
               </div>
-            </div></motion.div>
-
-
+            </div>
+          </motion.div>
 
           {/* <div className="flex justify-start items-center my-2">
             <input

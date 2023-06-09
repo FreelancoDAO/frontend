@@ -7,10 +7,7 @@ import TxBox from "../Validation/TxBox";
 import { useSigner } from "wagmi";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
-const {
-  contractAddresses,
-  Freelanco_abi,
-} = require("../../constants");
+const { contractAddresses, Freelanco_abi } = require("../../constants");
 
 const MyGigActions = ({ proposalsData }) => {
   const router = useRouter();
@@ -36,12 +33,11 @@ const MyGigActions = ({ proposalsData }) => {
     ) {
       const FreelancoContract = new ethers.Contract(
         contractAddresses["Freelanco"][chainId]?.[0],
-        Freelanco_abi,
+        Freelanco_abi
       );
       setFreelanco(FreelancoContract);
     }
-  }
-    , [chainId]);
+  }, [chainId]);
 
   console.log("PROPOSALS SENT: ", proposalsData);
 
@@ -149,7 +145,7 @@ const MyGigActions = ({ proposalsData }) => {
                     <div className="flex flex-col">
                       <Link
                         href={`/freelancer-profile/${proposal?._id}`}
-                      // to={`/freelancer-profile/6`}
+                        // to={`/freelancer-profile/6`}
                       >
                         <span className="font-bold text-md hover:underline cursor-pointer">
                           {proposal?.client_address}
