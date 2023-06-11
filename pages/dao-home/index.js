@@ -10,6 +10,7 @@ const DaoHome = () => {
   const [totalVoters, setTotalVoters] = useState(undefined);
   const [teasuryBalance, setTreasuryBalance] = useState(undefined);
   const [tallyProposal, setTallyProposal] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const { user, daoNFTContract } = useAuth();
@@ -31,6 +32,7 @@ const DaoHome = () => {
   const matchAndAddTallyIdToProposals = () => {
     if (daoProposals.length > 0 && tallyProposal.length > 0) {
       const updatedProposals = matchAndAddTallyId(daoProposals, tallyProposal);
+      setIsLoading(false);
       setDAOProposals(updatedProposals);
     }
   };
@@ -115,12 +117,21 @@ const DaoHome = () => {
         </div>
       </div>
       <div class="flex justify-end mx-6 space-x-4">
-      <button class="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        <button class="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
           onClick={handleButtonClick}>
-        view all proposals on tally
-      </button>
+          view all proposals on tally
+        </button>
       </div>
-      <ProposalsListing daoProposals={daoProposals} />
+      {isLoading ? (
+        <div className="flex w-3/4 justify-center mt-5 mx-5">
+          <img
+            src="loading.gif"
+            height={80}
+            width={80}
+          />
+        </div>
+      ) :
+        <ProposalsListing daoProposals={daoProposals} />}
     </div>
   );
 };
