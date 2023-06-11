@@ -42,16 +42,23 @@ const ProposalsListing = ({ daoProposals }) => {
         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
           {daoProposals.map((proposal, idx) => {
             return (
-              <tr class="hover:opacity-90 cursor-pointer">
+              <tr class="hover:opacity-90 cursor-pointer" onClick={() =>
+                router.push({
+                  pathname: "/dao-home/proposal-detail",
+                  query: {
+                    proposal: JSON.stringify(proposal),
+                  },
+                })
+              }>
                 <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                   <div class="relative h-10">
                     {/* <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
                   </div>
                   <div class="text-sm">
-                    <div class="font-medium text-gray-700">
-                      {proposal?.proposalId.slice(0, 24)}...
+                    <div class="font-medium text-gray-300">
+                      {proposal?.reason.slice(0, 50)}...
                     </div>
-                    <div class="text-gray-400">{proposal?.createdAt}</div>
+                    <div class="text-gray-400">Proposed on : {proposal?.createdAt?.split("T")[0]}</div>
                   </div>
                 </th>
                 <td class="px-6 py-4">

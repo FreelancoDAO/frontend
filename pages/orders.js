@@ -8,6 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 import GigRating from "../components/Gigs/GigRating";
 import MakeDispute from "../components/Gigs/MakeDispute";
+import ErrorBox from "../components/Validation/ErrorBox";
+import TxBox from "../components/Validation/TxBox";
 import { useSigner } from "wagmi";
 import { ethers } from "ethers";
 
@@ -40,20 +42,6 @@ const ClientProfile = () => {
 
   const [selectedOrder, setSelectedOrder] = useState(undefined);
 
-  const [freelancoContract, setFreelanco] = useState(undefined);
-  useEffect(() => {
-    if (
-      contractAddresses["Gig"][chainId]?.[0] &&
-      contractAddresses["Freelanco"][chainId]?.[0]
-    ) {
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][chainId]?.[0],
-        Freelanco_abi,
-      );
-      setFreelanco(FreelancoContract);
-    }
-  }
-    , [chainId]);
 
   useEffect(() => {
     const getData = async () => {
@@ -106,11 +94,22 @@ const ClientProfile = () => {
 
   const markSuccessful = async () => {
     try {
+      let FreelancoContract;
+      if (
+        contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]
+      ) {
+
+        FreelancoContract = new ethers.Contract(
+          contractAddresses["Freelanco"][chainId]?.[0],
+          Freelanco_abi,
+        );
+      }
       console.log("Sending to Offer ID: ", BigInt(selectedOrder?.offerId));
       if (!signer) {
         throw new Error("please connect your wallet");
       }
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
       let tx = await contractWithSigner.markSuccessful(
         BigInt(selectedOrder?.offerId),
         { gasLimit: 500000 }
@@ -136,18 +135,31 @@ const ClientProfile = () => {
 
   const dispute = async (reason) => {
     try {
+      let FreelancoContract;
+      if (
+        contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]
+      ) {
+
+        FreelancoContract = new ethers.Contract(
+          contractAddresses["Freelanco"][chainId]?.[0],
+          Freelanco_abi,
+        );
+      }
       console.log("Sending to Offer ID: ", BigInt(selectedOrder?.offerId));
       if (!signer) {
         throw new Error("please connect your wallet");
       }
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
       let tx = await contractWithSigner.disputeContract(
         BigInt(selectedOrder?.offerId),
         reason,
         { gasLimit: 5000000 }
       );
-      setShowTxDialog(true);
+      setShowDisputeDialog(false);
       setTxMessage(tx.hash);
+      setShowTxDialog(true);
+      (tx.hash);
       await tx.wait();
       console.log(tx);
       location.reload();
@@ -167,6 +179,17 @@ const ClientProfile = () => {
 
   return (
     <div className="">
+      <ErrorBox
+        show={showErrorDialog}
+        cancel={setShowErrorDialog}
+        errorMessage={errorMessage}
+      />
+      <TxBox
+        show={showTxDialog}
+        cancel={setShowTxDialog}
+        txMessage={txMessage}
+      // routeToPush={"/client-profile"}
+      />
       <button
         data-drawer-target="default-sidebar"
         data-drawer-toggle="default-sidebar"

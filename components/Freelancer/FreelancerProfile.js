@@ -74,21 +74,19 @@ const YourProfile = ({
   const allowEdit = user?.freelancer_ref !== null;
   const [completenss, setcompletenss] = useState(undefined);
 
-  const [freelancoContract, setFreelanco] = useState(undefined);
-  useEffect(() => {
+
+  const boostProfile = async () => {
+    let FreelancoContract;
     if (
       contractAddresses["Gig"][chainId]?.[0] &&
       contractAddresses["Freelanco"][chainId]?.[0]
     ) {
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][chainId][0],
-        Freelanco_abi
-      );
-      setFreelanco(FreelancoContract);
-    }
-  }, [chainId]);
 
-  const boostProfile = async () => {
+      FreelancoContract = new ethers.Contract(
+        contractAddresses["Freelanco"][chainId]?.[0],
+        Freelanco_abi,
+      );
+    }
     console.log("hoooo");
     if (!data?.lock_amount || !data?.deadline) {
       alert("fill both details.....");
@@ -104,7 +102,7 @@ const YourProfile = ({
           currentTimestamp) /
         12;
 
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
 
       let tx = await contractWithSigner.boostProfile(Math.floor(_deadline), {
         value: ethers.utils.parseEther(

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DAOLoginForm from "../components/DAO/DAOLoginForm";
 import LoginHeader from "../components/Account/LoginHeader";
 import DAORegisterForm from "../components/DAO/DAORegisterForm";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import useAuth from "../hooks/useAuth";
 

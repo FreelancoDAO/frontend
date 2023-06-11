@@ -9,6 +9,7 @@ import axios from "axios";
 import ErrorBox from "../components/Validation/ErrorBox";
 import TxBox from "../components/Validation/TxBox";
 import { useSigner } from "wagmi";
+import { connectSocket } from "../socket";
 const {
   contractAddresses,
   Freelanco_abi,
@@ -35,8 +36,7 @@ const checkout = () => {
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
   const [validationErrors, setValidationErrors] = useState("");
-  // const { data: signe, isError, isLoading } = useSigner();
-  const [freelancoContract, setFreelanco] = useState(undefined);
+
 
 
   const {
@@ -53,23 +53,7 @@ const checkout = () => {
     mode: "onChange",
   });
   const data = useWatch({ control });
-  console.log(data);
-
-  useEffect(() => {
-    if (
-      contractAddresses["Gig"][chainId]?.[0] &&
-      contractAddresses["Freelanco"][chainId]?.[0]
-    ) {
-    
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][chainId]?.[0],
-        Freelanco_abi,
-      );
-      setFreelanco(FreelancoContract);
-    }
-  }
-    , [chainId]);
-  console.log("freelancoContract------------>", freelancoContract, chainId);
+ 
 
   const handleChange = (e) => {
     setValue("freelancer_charges", e.target.value);
@@ -82,6 +66,17 @@ const checkout = () => {
 
   const submit_proposal = async () => {
     try {
+      let FreelancoContract;
+      if (
+        contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]
+      ) {
+
+        FreelancoContract = new ethers.Contract(
+          contractAddresses["Freelanco"][chainId]?.[0],
+          Freelanco_abi,
+        );
+      }
       const errors = {};
 
       if (!getValues("terms")) {
@@ -114,7 +109,7 @@ const checkout = () => {
         return;
       }
 
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
       console.log(contractWithSigner, "contractWithSigner");
       const currentTimestamp = Math.floor(Date.now() / 1000);
 

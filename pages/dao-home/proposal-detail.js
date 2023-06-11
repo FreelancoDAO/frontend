@@ -14,7 +14,7 @@ const DaoProposalDetail = () => {
   const router = useRouter();
   const { user, daoNFTContract } = useAuth();
   const [proposal, setProposal] = useState(null);
-
+  console.log("proposal", proposal);
   useEffect(() => {
     if (router?.query?.proposal) {
       setProposal(JSON.parse(router.query.proposal));
@@ -82,7 +82,8 @@ const DaoProposalDetail = () => {
       to: null,
       type: "Text",
     };
-
+    console.log("message", message);
+    console.log("socket", socket);
     if (socket) {
       socket.emit("text_message", message, function (response) {
         console.log("RES:", response);
@@ -131,6 +132,9 @@ const DaoProposalDetail = () => {
       </div>
     );
   };
+  const handleButtonClick = () => {
+    window.open(`https://www.tally.xyz/gov/freelancodao-beta/proposal/${proposal?.tallyId}`, '_blank');
+  };
 
   return (
     <div>
@@ -138,6 +142,41 @@ const DaoProposalDetail = () => {
       <div className="px-4 md:px-40 py-4 pt-20  bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 font-medium">
         <div className="w-full">
           <p className="text-3xl md:text-5xl text-white ">Proposal</p>
+
+          <button class="flex items-center justify-center my-12 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            onClick={handleButtonClick}>
+            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 13l4 4L19 7"></path>
+            </svg>
+            Vote Now
+          </button>
+
+          {/* <div class="flex justify-end space-x-4">
+            <button class="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+              <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 13l4 4L19 7"></path>
+              </svg>
+              For
+            </button>
+
+            <button class="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+              <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Against
+            </button>
+
+            <button class="flex items-center justify-center px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+              <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="8"></line>
+              </svg>
+              Abstain
+            </button>
+          </div> */}
+
+          {/* <iframe src={`https://www.tally.xyz/gov/freelancodao-beta/proposals`} style={{ width: "100%", height: "600px" }}></iframe> */}
           <div className="flex justify-between items-center">
             <p className="text-sm md:text-md font-bold text-gray-400">
               Reason for Proposal
@@ -241,28 +280,28 @@ const DaoProposalDetail = () => {
                               new Date(
                                 conversations[id]?.created_at
                               ).getDate() -
-                                new Date(
-                                  conversations[id - 1]?.created_at
-                                ).getDate() >
-                                0
-                            ? generateDate(conversations[id]?.created_at)
-                            : null}
+                              new Date(
+                                conversations[id - 1]?.created_at
+                              ).getDate() >
+                              0
+                              ? generateDate(conversations[id]?.created_at)
+                              : null}
                         </div>
                         {message.from ==
                           conversationsData?.freelancer_address && (
-                          <MessageLeft
-                            message={message.text}
-                            timestamp={message.created_at}
-                            // photoURL={
-                            //   "https://ipfs.io/ipfs/" + freelancerData?.ipfsImageHash
-                            // }
-                            // avatarDisp={true}
-                            displayName={trimAddress(
-                              conversationsData?.freelancer_address
-                            )}
-                            type={message.type}
-                          />
-                        )}
+                            <MessageLeft
+                              message={message.text}
+                              timestamp={message.created_at}
+                              // photoURL={
+                              //   "https://ipfs.io/ipfs/" + freelancerData?.ipfsImageHash
+                              // }
+                              // avatarDisp={true}
+                              displayName={trimAddress(
+                                conversationsData?.freelancer_address
+                              )}
+                              type={message.type}
+                            />
+                          )}
 
                         {message.from == conversationsData?.client_address && (
                           <MessageRight

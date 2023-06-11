@@ -21,30 +21,28 @@ const LoginForm = ({ setWantsToLogin }) => {
   const [errorMessage, setErrorMessage] = useState(undefined);
   const { signMessageAsync } = useSignMessage();
 
-  const [daoNFTContract, setDAONFT] = useState(undefined);
 
-  useEffect(() => {
-    if (contractAddresses.DaoNFT[chain.id]?.[0]) {
-      const DAONFT = new ethers.Contract(
-        contractAddresses["DaoNFT"][chain.id]?.[0],
-        DaoNFT_abi
-      );
-      console.log("chaindi:", DAONFT);
-      setDAONFT(DAONFT);
-    }
-  }, [chain.id]);
+
+
 
   const getData = async (userArg) => {
     let res;
     try {
+      let DaoNftContract;
+      if (contractAddresses.DaoNFT[chain?.id]?.[0]) {
+        DaoNftContract = new ethers.Contract(
+          contractAddresses["DaoNFT"][chain.id]?.[0],
+          DaoNFT_abi
+        );
+      }
       if (user) {
         console.log("trying 1");
         console.log(user);
-        const connectedContract = daoNFTContract.connect(signer);
+        const connectedContract = DaoNftContract.connect(signer);
         res = await connectedContract.balanceOf(user.wallet_address);
       } else {
         console.log("trying 2 ");
-        const connectedContract = daoNFTContract.connect(signer);
+        const connectedContract = DaoNftContract.connect(signer);
         res = await connectedContract.balanceOf(
           ethers.utils.getAddress(userArg.wallet_address)
         );

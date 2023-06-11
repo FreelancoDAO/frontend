@@ -23,27 +23,22 @@ const MyGigActions = ({ proposalsData }) => {
   const [showTxDialog, setShowTxDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [txMessage, setTxMessage] = useState(undefined);
-  // const { data: signer, isError, isLoading } = useSigner();
 
-  const [freelancoContract, setFreelanco] = useState(undefined);
-  useEffect(() => {
-    if (
-      contractAddresses["Gig"][chainId]?.[0] &&
-      contractAddresses["Freelanco"][chainId]?.[0]
-    ) {
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Freelanco"][chainId]?.[0],
-        Freelanco_abi
-      );
-      setFreelanco(FreelancoContract);
-    }
-  }, [chainId]);
-
-  console.log("PROPOSALS SENT: ", proposalsData);
 
   const acceptOffer = async () => {
     setShowDialog(false);
     try {
+      let FreelancoContract;
+      if (
+        contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]
+      ) {
+
+        FreelancoContract = new ethers.Contract(
+          contractAddresses["Freelanco"][chainId]?.[0],
+          Freelanco_abi,
+        );
+      }
       console.log(
         "Sending to Offer ID: ",
         BigInt(proposalsData[selectedOrder]?.offerId)
@@ -51,7 +46,7 @@ const MyGigActions = ({ proposalsData }) => {
       if (!signer) {
         throw new Error("please connect your wallet");
       }
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
       let tx = await contractWithSigner.approveOffer(
         BigInt(proposalsData[selectedOrder]?.offerId),
         { gasLimit: 1000000 }
@@ -77,6 +72,17 @@ const MyGigActions = ({ proposalsData }) => {
 
   const rejectOffer = async () => {
     try {
+      let FreelancoContract;
+      if (
+        contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]
+      ) {
+
+        FreelancoContract = new ethers.Contract(
+          contractAddresses["Freelanco"][chainId]?.[0],
+          Freelanco_abi,
+        );
+      }
       console.log(
         "Sending to Offer ID: ",
         BigInt(proposalsData[selectedOrder]?.offerId)
@@ -84,7 +90,7 @@ const MyGigActions = ({ proposalsData }) => {
       if (!signer) {
         throw new Error("please connect your wallet");
       }
-      let contractWithSigner = freelancoContract.connect(signer);
+      let contractWithSigner = FreelancoContract.connect(signer);
       let tx = await contractWithSigner.rejectOffer(
         BigInt(proposalsData[selectedOrder]?.offerId),
         { gasLimit: 1000000 }

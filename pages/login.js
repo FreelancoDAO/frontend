@@ -9,7 +9,7 @@ const LoginPage = () => {
   return (
     <div className="video-container flex justify-between text-black" >
       
-      <video src={"/data_grid.mp4"} autoPlay loop muted id="myVideo" className="video-background" style={{ opacity: 0.5 }} />
+      <video src={"./data_grid.mp4"} autoPlay loop muted id="myVideo" className="video-background" style={{ opacity: 0.5 }} />
       <div className="w-[100vw] h-[60vh] mt-32 absolute" style={{
         zIndex: -1,
         background: "rgba(0, 0, 0, 1)",

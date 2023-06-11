@@ -1,6 +1,7 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { ethers } from "ethers";
+import { useRouter } from "next/router";
 import ErrorBox from "../Validation/ErrorBox";
 import { useAccount, useNetwork, useSigner } from "wagmi";
 
@@ -13,35 +14,31 @@ const DAORegisterForm = ({ setWantsToLogin }) => {
   const { setUser, setIsLoggedIn, user, chainId, signer } = useAuth();
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
-  // const { data: signer, isError, isLoading } = useSigner()
+  const router = useRouter();
 
-  const [daoNFTContract, setDAONFT] = useState(undefined);
-
-  useEffect(() => {
-    if (contractAddresses.DaoNFT[chainId]?.[0]) {
-      const DAONFT = new ethers.Contract(
-        contractAddresses["DaoNFT"][chainId]?.[0],
-        DaoNFT_abi,
-      );
-      setDAONFT(DAONFT);
-    }
-  }, [chainId]);
 
   const { address } = useAccount();
 
   const requestNFT = async () => {
     try {
+      let DaoNftContract;
+      if (contractAddresses.DaoNFT[chainId]?.[0]) {
+        DaoNftContract = new ethers.Contract(
+          contractAddresses["DaoNFT"][chainId]?.[0],
+          DaoNFT_abi
+        );
+      }
       if (!signer) {
         throw new Error("please connect your wallet");
       }
-      let contractWithSigner = daoNFTContract.connect(signer);
+      let contractWithSigner = DaoNftContract.connect(signer);
       let tx = await contractWithSigner.requestNft({
         value: ethers.utils.parseEther((0.11).toString()),
         gasLimit: 500000,
       });
       await tx.wait();
       console.log(tx);
-      router.push("/dao-home");
+      router.push("/dao-home"); 
     } catch (e) {
       setShowErrorDialog(true);
       if (e.toString().includes("rejected")) {

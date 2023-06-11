@@ -47,7 +47,6 @@ const CreateFreelancerPage = () => {
   const [errorMessage, setErrorMessage] = useState(undefined);
   // const { data: signer, isError } = useSigner();
   const [isLoading, setIsLoading] = useState(false);
-  const [gigContract, setGigContract] = useState(undefined);
 
   const {
     register,
@@ -90,16 +89,7 @@ const CreateFreelancerPage = () => {
     }
   }, [categories]);
 
-  useEffect(() => {
-    if (contractAddresses["Gig"][chainId]?.[0] &&
-      contractAddresses["Freelanco"][chainId]?.[0]) {
-      const FreelancoContract = new ethers.Contract(
-        contractAddresses["Gig"][chainId]?.[0],
-        Gig_abi
-      );
-      setGigContract(FreelancoContract);
-    }
-  }, [chainId]);
+
 
   const [jsonURI, setURI] = useState(undefined);
 
@@ -177,11 +167,19 @@ const CreateFreelancerPage = () => {
 
   const contractCall = async () => {
     try {
+      let GigContract;
+      if (contractAddresses["Gig"][chainId]?.[0] &&
+        contractAddresses["Freelanco"][chainId]?.[0]) {
+        GigContract = new ethers.Contract(
+          contractAddresses["Gig"][chainId]?.[0],
+          Gig_abi
+        );
+      }
 
 
       setIsMinted(false);
       setShowSubmitDialog(false);
-      let contractWithSigner = gigContract.connect(signer);
+      let contractWithSigner = GigContract.connect(signer);
 
       if (isMinted) {
         setTxMessage("Gig minting is in progress......");
